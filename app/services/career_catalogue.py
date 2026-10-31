@@ -358,12 +358,13 @@ for _role in CAREER_ROLES_CATALOGUE:
         ]
 
 
+# Pre-indexed dictionary for O(1) instantaneous career role lookups
+_ROLES_BY_SLUG: Dict[str, Dict[str, Any]] = {role["slug"]: role for role in CAREER_ROLES_CATALOGUE}
+
+
 def get_catalogue_dict() -> Dict[str, Dict[str, Any]]:
-    return {role["slug"]: role for role in CAREER_ROLES_CATALOGUE}
+    return _ROLES_BY_SLUG.copy()
 
 
 def get_role_by_slug(slug: str) -> Optional[Dict[str, Any]]:
-    for role in CAREER_ROLES_CATALOGUE:
-        if role["slug"] == slug:
-            return role
-    return None
+    return _ROLES_BY_SLUG.get(slug)

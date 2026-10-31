@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.gzip import GZipMiddleware
 
 # Ensure the project root is in sys.path regardless of working directory
 APP_DIR = Path(__file__).resolve().parent
@@ -27,12 +28,25 @@ app = FastAPI(
     version="2.5.0"
 )
 
+# Enable automatic Gzip compression for all responses >= 500 bytes
+app.add_middleware(GZipMiddleware, minimum_size=500)
+
 STATIC_DIR = APP_DIR / "static"
 TEMPLATES_DIR = APP_DIR / "templates"
 
+
+class CachedStaticFiles(StaticFiles):
+    """Custom StaticFiles handler that attaches Cache-Control headers for ultra-fast local asset caching."""
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        if response.status_code == 200:
+            response.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=3600"
+        return response
+
+
 app.mount(
     "/static",
-    StaticFiles(directory=str(STATIC_DIR)),
+    CachedStaticFiles(directory=str(STATIC_DIR)),
     name="static"
 )
 

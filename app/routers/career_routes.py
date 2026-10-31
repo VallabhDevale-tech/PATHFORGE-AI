@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from app.auth import AuthenticatedUser, get_current_user, get_user_supabase_client
 from app.schemas.career_schema import (
@@ -18,8 +18,9 @@ router = APIRouter(prefix="/careers", tags=["Career Path Recommender"])
 
 
 @router.get("/catalogue", summary="Get complete career role catalogue")
-def get_career_catalogue():
+def get_career_catalogue(response: Response):
     """Returns the predefined 13 career roles with required skills and descriptions."""
+    response.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=3600"
     return {
         "status": "success",
         "total": len(CAREER_ROLES_CATALOGUE),
@@ -28,13 +29,14 @@ def get_career_catalogue():
 
 
 @router.get("/catalogue/{slug}", summary="Get specific career role details")
-def get_catalogue_role(slug: str):
+def get_catalogue_role(slug: str, response: Response):
     role = get_role_by_slug(slug)
     if not role:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Career role '{slug}' not found in catalogue."
         )
+    response.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=3600"
     return {
         "status": "success",
         "data": role

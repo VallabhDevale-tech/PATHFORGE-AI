@@ -10,10 +10,19 @@ from supabase.lib.client_options import ClientOptions
 
 from app.database import supabase, SUPABASE_URL, SUPABASE_KEY
 
+import time
+from typing import Set, Tuple, Dict
+
 logger = logging.getLogger("pathforge.auth")
 security = HTTPBearer(auto_error=False)
 
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
+
+# Performance Optimization: In-memory cache for profiles and short-lived token verification
+_KNOWN_PROFILES: Set[str] = set()
+_TOKEN_CACHE: Dict[str, Tuple['AuthenticatedUser', float]] = {}
+_MAX_TOKEN_CACHE_SIZE = 1000
+_TOKEN_CACHE_TTL_SECONDS = 60.0  # 1 minute high-speed cache for rapid consecutive requests
 
 
 class AuthenticatedUser(BaseModel):
@@ -42,7 +51,11 @@ def ensure_user_profile(user_id: str, email: Optional[str], access_token: str) -
     """
     Ensures a corresponding record exists in public.profiles.
     The public.resumes table has a foreign key constraint referencing profiles.id.
+    Uses in-memory set to prevent redundant PostgREST lookups on every single request.
     """
+    if user_id in _KNOWN_PROFILES:
+        return
+
     try:
         user_client = get_user_supabase_client(access_token)
         # Check if profile already exists
@@ -53,8 +66,10 @@ def ensure_user_profile(user_id: str, email: Optional[str], access_token: str) -
                 "email": email or "",
                 "full_name": email.split("@")[0] if email else "User"
             }).execute()
+        _KNOWN_PROFILES.add(user_id)
     except Exception as exc:
         # If already exists or insert fails, log but don't disrupt auth flow
+        _KNOWN_PROFILES.add(user_id)
         logger.debug(f"Profile check/insert result for user {user_id}: {exc}")
 
 
@@ -65,6 +80,7 @@ async def get_current_user(
     FastAPI dependency that extracts and validates the Supabase JWT.
     Never trusts client-supplied user IDs; verifies the token signature
     and extracts the verified user identity from Supabase Auth.
+    Features short-lived in-memory caching to eliminate duplicate Supabase Auth roundtrips.
     """
     if not credentials or not credentials.credentials:
         raise HTTPException(
@@ -74,6 +90,23 @@ async def get_current_user(
         )
 
     token = credentials.credentials.strip()
+    now = time.time()
+
+    # Check high-speed token verification cache
+    cached = _TOKEN_CACHE.get(token)
+    if cached and cached[1] > now:
+        return cached[0]
+
+    def _cache_user(u: AuthenticatedUser) -> AuthenticatedUser:
+        if len(_TOKEN_CACHE) >= _MAX_TOKEN_CACHE_SIZE:
+            # Purge expired entries
+            expired = [k for k, (_, exp) in _TOKEN_CACHE.items() if exp <= now]
+            for k in expired:
+                _TOKEN_CACHE.pop(k, None)
+            if len(_TOKEN_CACHE) >= _MAX_TOKEN_CACHE_SIZE:
+                _TOKEN_CACHE.clear()
+        _TOKEN_CACHE[token] = (u, now + _TOKEN_CACHE_TTL_SECONDS)
+        return u
 
     # 1. Attempt token verification via Supabase Auth API
     try:
@@ -86,11 +119,12 @@ async def get_current_user(
             # Ensure profile exists for foreign key integrity
             ensure_user_profile(user_id, email, token)
 
-            return AuthenticatedUser(
+            auth_user = AuthenticatedUser(
                 id=user_id,
                 email=email,
                 access_token=token
             )
+            return _cache_user(auth_user)
     except Exception as api_err:
         logger.debug(f"Supabase auth.get_user verification failed: {api_err}")
 
@@ -113,11 +147,12 @@ async def get_current_user(
             email = payload.get("email")
             ensure_user_profile(user_id, email, token)
 
-            return AuthenticatedUser(
+            auth_user = AuthenticatedUser(
                 id=str(user_id),
                 email=email,
                 access_token=token
             )
+            return _cache_user(auth_user)
         except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

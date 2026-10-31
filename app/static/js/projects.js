@@ -60,28 +60,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function initAuth() {
-    let session = null;
-    if (supabaseClient) {
-      try {
-        const { data } = await supabaseClient.auth.getSession();
-        session = data ? data.session : null;
-      } catch (err) {}
-    }
-
-    if (session && session.access_token) {
-      setAuthenticatedState(session.access_token, session.user.email);
-      return;
-    }
-
+    // 1. Instant auth verification from localStorage (0ms UI render)
     if (currentToken) {
       try {
         const payload = JSON.parse(atob(currentToken.split(".")[1]));
         if (!payload.exp || (payload.exp * 1000 > Date.now())) {
           setAuthenticatedState(currentToken, payload.email || "Authenticated User");
+
+          // Verify & refresh silently in background without blocking UI
+          if (supabaseClient) {
+            supabaseClient.auth.getSession().then(({ data }) => {
+              if (data && data.session && data.session.access_token) {
+                currentToken = data.session.access_token;
+                localStorage.setItem("pathforge_auth_token", currentToken);
+              }
+            }).catch(() => {});
+          }
           return;
         }
-      } catch (e) {}
+      } catch (e) {
+        localStorage.removeItem("pathforge_auth_token");
+      }
     }
+
+    // 2. Fallback to Supabase getSession if token was missing
+    if (supabaseClient) {
+      try {
+        const { data } = await supabaseClient.auth.getSession();
+        if (data && data.session && data.session.access_token) {
+          setAuthenticatedState(data.session.access_token, data.session.user.email);
+          return;
+        }
+      } catch (err) {}
+    }
+
     window.location.replace("/");
   }
 

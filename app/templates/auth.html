@@ -3,223 +3,473 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PATHFORGE AI | Sign In & Register</title>
+  <title>PATHFORGE AI | Career Transition Companion</title>
   
+  <!-- Preconnect to CDNs for speed -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- Google Fonts: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Authentication Styles -->
+  <!-- Authentication & Landing Styles -->
+  <link rel="stylesheet" href="/static/css/resume_analysis.css">
   <link rel="stylesheet" href="/static/css/auth.css">
 </head>
 <body class="auth-body">
 
-  <div class="auth-container">
-    
-    <!-- Brand Header -->
-    <div class="text-center mb-4">
-      <div class="d-inline-flex align-items-center gap-2 mb-2">
-        <div class="brand-badge text-white rounded-3 p-1 px-2 fw-bold fs-5">PF</div>
-        <span class="brand-gradient fs-3 fw-bold">PATHFORGE<span class="text-white fw-light">.AI</span></span>
-      </div>
-      <p class="text-muted small mb-0">Your AI-Powered Career Transition Companion</p>
-    </div>
+  <!-- Minimal SaaS Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <div class="brand-badge">PF</div>
+        <span class="brand-gradient fs-4">PATHFORGE<span>.AI</span></span>
+      </a>
 
-    <!-- Auth Card -->
-    <div class="auth-card">
-      
-      <!-- Pills Navigation: Sign In vs Sign Up -->
-      <ul class="nav nav-pills nav-fill auth-nav-pills" id="authTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="tabSignInBtn" data-bs-toggle="tab" data-bs-target="#paneSignIn" type="button" role="tab">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tabSignUpBtn" data-bs-toggle="tab" data-bs-target="#paneSignUp" type="button" role="tab">
-            <i class="bi bi-person-plus me-1"></i> Create Account
-          </button>
-        </li>
-      </ul>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navLandingMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <!-- Alert Notification Area -->
-      <div id="authAlert" class="auth-alert d-none" role="alert">
+      <div class="collapse navbar-collapse" id="navLandingMenu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-it-works">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#benefits">Benefits</a>
+          </li>
+        </ul>
         <div class="d-flex align-items-center gap-2">
-          <i id="authAlertIcon" class="bi fs-5"></i>
-          <span id="authAlertMessage"></span>
+          <a href="#auth-card" class="btn btn-primary-gradient btn-sm px-3 py-2 rounded-3">Get Started</a>
         </div>
       </div>
+    </div>
+  </nav>
 
-      <!-- Tab Content -->
-      <div class="tab-content" id="authTabContent">
+  <!-- Hero Section with Integrated SaaS Auth -->
+  <main class="py-5">
+    <div class="container px-4">
+      <div class="row align-items-center g-5 py-4">
         
-        <!-- ------------------------------------------------------------- -->
-        <!-- SIGN IN FORM                                                  -->
-        <!-- ------------------------------------------------------------- -->
-        <div class="tab-pane fade show active" id="paneSignIn" role="tabpanel">
-          <form id="signInForm" novalidate>
-            
-            <!-- Email Address -->
-            <div class="mb-3">
-              <label for="signInEmail" class="auth-label">
-                <span>Email Address</span>
-              </label>
-              <input 
-                type="email" 
-                id="signInEmail" 
-                class="form-control auth-control" 
-                placeholder="name@example.com" 
-                required 
-                autocomplete="email"
-              >
+        <!-- Hero Copy -->
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light border mb-3">
+            <span class="badge bg-primary text-white" style="font-size: 0.72rem;">NEW</span>
+            <span class="small text-muted fw-semibold">Next-Gen Career Intelligence Platform</span>
+          </div>
+
+          <h1 class="display-5 fw-bold mb-3" style="line-height: 1.15; color: #0f172a;">
+            Navigate Your Tech Career Transition with <span style="color: #4f46e5;">Verified Precision.</span>
+          </h1>
+
+          <p class="lead text-muted mb-4" style="max-width: 580px; font-size: 1.1rem; line-height: 1.6;">
+            Extract factual skills directly from your resume, benchmark against 13 industry roles, diagnose priority skill gaps, and follow an adaptive learning curriculum tailored to your background.
+          </p>
+
+          <div class="row g-3 mb-4" style="max-width: 560px;">
+            <div class="col-sm-6 d-flex align-items-center gap-2">
+              <i class="bi bi-check2-circle text-success fs-5"></i>
+              <span class="small text-secondary fw-medium">Zero-hallucination parsing</span>
             </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="signInPassword" class="auth-label">
-                <span>Password</span>
-                <a href="#" id="forgotPasswordLink" class="auth-link">Forgot Password?</a>
-              </label>
-              <div class="input-group">
-                <input 
-                  type="password" 
-                  id="signInPassword" 
-                  class="form-control auth-control has-toggle" 
-                  placeholder="Enter your password" 
-                  required 
-                  autocomplete="current-password"
-                >
-                <button type="button" class="btn btn-password-toggle" id="toggleSignInPassword" title="Show/Hide password">
-                  <i class="bi bi-eye"></i>
-                </button>
-              </div>
+            <div class="col-sm-6 d-flex align-items-center gap-2">
+              <i class="bi bi-check2-circle text-success fs-5"></i>
+              <span class="small text-secondary fw-medium">13 Target Engineering Tracks</span>
             </div>
-
-            <!-- Submit Button -->
-            <button type="submit" id="btnSignInSubmit" class="btn btn-auth-submit">
-              <span id="signInSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
-              <span id="signInBtnText">Sign In to PATHFORGE</span>
-            </button>
-
-            <!-- Switch to Sign Up -->
-            <div class="text-center mt-4">
-              <span class="text-muted small">Don't have an account?</span>
-              <a href="#" id="switchToSignUp" class="auth-link ms-1">Create Account</a>
+            <div class="col-sm-6 d-flex align-items-center gap-2">
+              <i class="bi bi-check2-circle text-success fs-5"></i>
+              <span class="small text-secondary fw-medium">Deterministic gap scoring</span>
             </div>
-
-          </form>
+            <div class="col-sm-6 d-flex align-items-center gap-2">
+              <i class="bi bi-check2-circle text-success fs-5"></i>
+              <span class="small text-secondary fw-medium">Self-adjusting study roadmaps</span>
+            </div>
+          </div>
         </div>
 
-        <!-- ------------------------------------------------------------- -->
-        <!-- SIGN UP FORM                                                  -->
-        <!-- ------------------------------------------------------------- -->
-        <div class="tab-pane fade" id="paneSignUp" role="tabpanel">
-          <form id="signUpForm" novalidate>
+        <!-- Auth Card -->
+        <div class="col-lg-5" id="auth-card">
+          <div class="auth-card">
             
-            <!-- Full Name -->
-            <div class="mb-3">
-              <label for="signUpFullName" class="auth-label">
-                <span>Full Name</span>
-              </label>
-              <input 
-                type="text" 
-                id="signUpFullName" 
-                class="form-control auth-control" 
-                placeholder="Jane Doe" 
-                required 
-                autocomplete="name"
-              >
+            <div class="text-center mb-3">
+              <h4 class="fw-bold text-dark mb-1">Welcome to PATHFORGE</h4>
+              <p class="text-muted small mb-0">Sign in to your dashboard or create a free account.</p>
             </div>
 
-            <!-- Email Address -->
-            <div class="mb-3">
-              <label for="signUpEmail" class="auth-label">
-                <span>Email Address</span>
-              </label>
-              <input 
-                type="email" 
-                id="signUpEmail" 
-                class="form-control auth-control" 
-                placeholder="name@example.com" 
-                required 
-                autocomplete="email"
-              >
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="signUpPassword" class="auth-label">
-                <span>Password (min. 6 characters)</span>
-              </label>
-              <div class="input-group">
-                <input 
-                  type="password" 
-                  id="signUpPassword" 
-                  class="form-control auth-control has-toggle" 
-                  placeholder="Create a strong password" 
-                  minlength="6" 
-                  required 
-                  autocomplete="new-password"
-                >
-                <button type="button" class="btn btn-password-toggle" id="toggleSignUpPassword" title="Show/Hide password">
-                  <i class="bi bi-eye"></i>
+            <!-- Pills Navigation: Sign In vs Sign Up -->
+            <ul class="nav nav-pills nav-fill auth-nav-pills" id="authTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="tabSignInBtn" data-bs-toggle="tab" data-bs-target="#paneSignIn" type="button" role="tab">
+                  <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
                 </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tabSignUpBtn" data-bs-toggle="tab" data-bs-target="#paneSignUp" type="button" role="tab">
+                  <i class="bi bi-person-plus me-1"></i> Create Account
+                </button>
+              </li>
+            </ul>
+
+            <!-- Alert Notification Area -->
+            <div id="authAlert" class="auth-alert d-none" role="alert">
+              <div class="d-flex align-items-center gap-2">
+                <i id="authAlertIcon" class="bi fs-5"></i>
+                <span id="authAlertMessage"></span>
               </div>
             </div>
 
-            <!-- Confirm Password -->
-            <div class="mb-3">
-              <label for="signUpConfirmPassword" class="auth-label">
-                <span>Confirm Password</span>
-              </label>
-              <div class="input-group">
-                <input 
-                  type="password" 
-                  id="signUpConfirmPassword" 
-                  class="form-control auth-control has-toggle" 
-                  placeholder="Confirm your password" 
-                  minlength="6" 
-                  required 
-                  autocomplete="new-password"
-                >
-                <button type="button" class="btn btn-password-toggle" id="toggleSignUpConfirmPassword" title="Show/Hide password">
-                  <i class="bi bi-eye"></i>
-                </button>
+            <!-- Tab Content -->
+            <div class="tab-content" id="authTabContent">
+              
+              <!-- ------------------------------------------------------------- -->
+              <!-- SIGN IN FORM                                                  -->
+              <!-- ------------------------------------------------------------- -->
+              <div class="tab-pane fade show active" id="paneSignIn" role="tabpanel">
+                <form id="signInForm" novalidate>
+                  
+                  <!-- Email Address -->
+                  <div class="mb-3">
+                    <label for="signInEmail" class="auth-label">
+                      <span>Email Address</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      id="signInEmail" 
+                      class="form-control auth-control" 
+                      placeholder="name@example.com" 
+                      required 
+                      autocomplete="email"
+                    >
+                  </div>
+
+                  <!-- Password -->
+                  <div class="mb-3">
+                    <label for="signInPassword" class="auth-label">
+                      <span>Password</span>
+                      <a href="#" id="forgotPasswordLink" class="auth-link">Forgot Password?</a>
+                    </label>
+                    <div class="input-group">
+                      <input 
+                        type="password" 
+                        id="signInPassword" 
+                        class="form-control auth-control has-toggle" 
+                        placeholder="Enter your password" 
+                        required 
+                        autocomplete="current-password"
+                      >
+                      <button type="button" class="btn btn-password-toggle" id="toggleSignInPassword" title="Show/Hide password">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" id="btnSignInSubmit" class="btn btn-auth-submit">
+                    <span id="signInSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                    <span id="signInBtnText">Sign In to Dashboard</span>
+                  </button>
+
+                  <!-- Switch to Sign Up -->
+                  <div class="text-center mt-3">
+                    <span class="text-muted small">Don't have an account?</span>
+                    <a href="#" id="switchToSignUp" class="auth-link ms-1">Create Account</a>
+                  </div>
+
+                </form>
               </div>
+
+              <!-- ------------------------------------------------------------- -->
+              <!-- SIGN UP FORM                                                  -->
+              <!-- ------------------------------------------------------------- -->
+              <div class="tab-pane fade" id="paneSignUp" role="tabpanel">
+                <form id="signUpForm" novalidate>
+                  
+                  <!-- Full Name -->
+                  <div class="mb-3">
+                    <label for="signUpFullName" class="auth-label">
+                      <span>Full Name</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="signUpFullName" 
+                      class="form-control auth-control" 
+                      placeholder="Jane Doe" 
+                      required 
+                      autocomplete="name"
+                    >
+                  </div>
+
+                  <!-- Email Address -->
+                  <div class="mb-3">
+                    <label for="signUpEmail" class="auth-label">
+                      <span>Email Address</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      id="signUpEmail" 
+                      class="form-control auth-control" 
+                      placeholder="name@example.com" 
+                      required 
+                      autocomplete="email"
+                    >
+                  </div>
+
+                  <!-- Password -->
+                  <div class="mb-3">
+                    <label for="signUpPassword" class="auth-label">
+                      <span>Password (min. 6 characters)</span>
+                    </label>
+                    <div class="input-group">
+                      <input 
+                        type="password" 
+                        id="signUpPassword" 
+                        class="form-control auth-control has-toggle" 
+                        placeholder="Create a password" 
+                        minlength="6" 
+                        required 
+                        autocomplete="new-password"
+                      >
+                      <button type="button" class="btn btn-password-toggle" id="toggleSignUpPassword" title="Show/Hide password">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Confirm Password -->
+                  <div class="mb-3">
+                    <label for="signUpConfirmPassword" class="auth-label">
+                      <span>Confirm Password</span>
+                    </label>
+                    <div class="input-group">
+                      <input 
+                        type="password" 
+                        id="signUpConfirmPassword" 
+                        class="form-control auth-control has-toggle" 
+                        placeholder="Confirm password" 
+                        minlength="6" 
+                        required 
+                        autocomplete="new-password"
+                      >
+                      <button type="button" class="btn btn-password-toggle" id="toggleSignUpConfirmPassword" title="Show/Hide password">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" id="btnSignUpSubmit" class="btn btn-auth-submit">
+                    <span id="signUpSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                    <span id="signUpBtnText">Create Account</span>
+                  </button>
+
+                  <!-- Switch to Sign In -->
+                  <div class="text-center mt-3">
+                    <span class="text-muted small">Already have an account?</span>
+                    <a href="#" id="switchToSignIn" class="auth-link ms-1">Sign In</a>
+                  </div>
+
+                </form>
+              </div>
+
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" id="btnSignUpSubmit" class="btn btn-auth-submit">
-              <span id="signUpSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
-              <span id="signUpBtnText">Create My Account</span>
-            </button>
-
-            <!-- Switch to Sign In -->
-            <div class="text-center mt-4">
-              <span class="text-muted small">Already have an account?</span>
-              <a href="#" id="switchToSignIn" class="auth-link ms-1">Sign In</a>
+            <div class="text-center mt-4 pt-2 border-top">
+              <span class="text-muted small" style="font-size: 0.76rem;">
+                <i class="bi bi-shield-check text-success me-1"></i> Secured with Supabase PostgreSQL RLS
+              </span>
             </div>
 
-          </form>
+          </div>
         </div>
 
       </div>
-
     </div>
 
-    <!-- Security & Privacy footer note -->
-    <div class="text-center mt-4">
-      <p class="text-muted small mb-0" style="font-size: 0.78rem;">
-        <i class="bi bi-shield-check text-success me-1"></i> Secured by Supabase Authentication & PostgreSQL Row Level Security.
-      </p>
-    </div>
+    <!-- Feature Pillars Section -->
+    <section class="py-5 bg-white border-top border-bottom" id="features">
+      <div class="container px-4">
+        <div class="text-center mb-5">
+          <span class="text-uppercase fw-semibold text-primary small" style="letter-spacing: 0.08em;">Core Capabilities</span>
+          <h2 class="fw-bold mt-1">Four Pillars of Career Intelligence</h2>
+          <p class="text-muted mx-auto" style="max-width: 600px;">
+            Engineered to remove guesswork from engineering career transitions.
+          </p>
+        </div>
 
-  </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="p-4 rounded-3 border bg-light h-100">
+              <div class="d-inline-flex p-2 rounded-2 bg-white text-primary mb-3 shadow-xs">
+                <i class="bi bi-file-earmark-text fs-4"></i>
+              </div>
+              <h5 class="fw-bold text-dark">1. Resume Analysis</h5>
+              <p class="text-muted small mb-0">Extracts 9 structured dimensions from PDF/DOCX resumes including verified skills, projects, and coursework.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="p-4 rounded-3 border bg-light h-100">
+              <div class="d-inline-flex p-2 rounded-2 bg-white text-primary mb-3 shadow-xs">
+                <i class="bi bi-compass fs-4"></i>
+              </div>
+              <h5 class="fw-bold text-dark">2. Career Recommender</h5>
+              <p class="text-muted small mb-0">Benchmarks your profile against 13 industry roles with transparent, explainable compatibility ratings.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="p-4 rounded-3 border bg-light h-100">
+              <div class="d-inline-flex p-2 rounded-2 bg-white text-primary mb-3 shadow-xs">
+                <i class="bi bi-bar-chart-steps fs-4"></i>
+              </div>
+              <h5 class="fw-bold text-dark">3. Skill Gap Analyzer</h5>
+              <p class="text-muted small mb-0">Classifies skills into Have, Improve, and Missing with deterministic mathematical proficiency gaps.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="p-4 rounded-3 border bg-light h-100">
+              <div class="d-inline-flex p-2 rounded-2 bg-white text-primary mb-3 shadow-xs">
+                <i class="bi bi-lightning-charge fs-4"></i>
+              </div>
+              <h5 class="fw-bold text-dark">4. Adaptive Learning</h5>
+              <p class="text-muted small mb-0">Generates week-by-week study roadmaps, portfolio project blueprints, and topic mastery diagnostic quizzes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5" id="how-it-works">
+      <div class="container px-4">
+        <div class="text-center mb-5">
+          <span class="text-uppercase fw-semibold text-primary small" style="letter-spacing: 0.08em;">Workflow</span>
+          <h2 class="fw-bold mt-1">How PATHFORGE AI Works</h2>
+          <p class="text-muted mx-auto" style="max-width: 600px;">
+            A simple, guided 3-step transition pipeline.
+          </p>
+        </div>
+
+        <div class="row g-4 text-center">
+          <div class="col-md-4">
+            <div class="p-4">
+              <div class="rounded-circle bg-white border text-primary fw-bold fs-4 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 56px; height: 56px;">1</div>
+              <h5 class="fw-bold">Upload Your Resume</h5>
+              <p class="text-muted small">Submit your current PDF or DOCX file. Our engine analyzes verified experience without fabricating claims.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4">
+              <div class="rounded-circle bg-white border text-primary fw-bold fs-4 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 56px; height: 56px;">2</div>
+              <h5 class="fw-bold">Select Target Track</h5>
+              <p class="text-muted small">Choose from 13 verified tech roles. Compare required competencies with your current skillset.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4">
+              <div class="rounded-circle bg-white border text-primary fw-bold fs-4 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 56px; height: 56px;">3</div>
+              <h5 class="fw-bold">Execute & Build</h5>
+              <p class="text-muted small">Follow week-by-week activities, build production-grade portfolio projects, and verify skills with quizzes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-5 bg-white border-top" id="benefits">
+      <div class="container px-4">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <span class="text-uppercase fw-semibold text-primary small" style="letter-spacing: 0.08em;">Why Engineers Choose Us</span>
+            <h2 class="fw-bold mt-1 mb-3">Designed for Clarity, Backed by Data.</h2>
+            <p class="text-muted mb-4">Unlike generic career advice, PATHFORGE provides deterministic feedback, real codebase projects, and structured pacing so you master the exact skills companies hire for.</p>
+            
+            <div class="d-flex flex-column gap-3">
+              <div class="d-flex gap-3">
+                <i class="bi bi-check-circle-fill text-primary fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Fresher & Career Changer Friendly</h6>
+                  <p class="text-muted small mb-0">Credits academic projects and coursework even with zero years of formal industry experience.</p>
+                </div>
+              </div>
+              <div class="d-flex gap-3">
+                <i class="bi bi-check-circle-fill text-primary fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Transparent Compatibility Engine</h6>
+                  <p class="text-muted small mb-0">Every recommendation explicitly explains why you matched, citing specific evidence from your profile.</p>
+                </div>
+              </div>
+              <div class="d-flex gap-3">
+                <i class="bi bi-check-circle-fill text-primary fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Portfolio-Ready Deliverables</h6>
+                  <p class="text-muted small mb-0">Provides real problem statements, required tech stacks, and step-by-step GitHub implementation blueprints.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="p-4 rounded-3 border bg-light">
+              <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                <div class="fw-bold text-dark">Target Role Compatibility</div>
+                <span class="badge bg-success text-white">Top Match</span>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-medium">Full Stack Developer</span>
+                  <span class="fw-bold text-primary">88% Match</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar" style="width: 88%;"></div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-medium">Backend Developer</span>
+                  <span class="fw-bold text-primary">82% Match</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar" style="width: 82%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-medium">Python Developer</span>
+                  <span class="fw-bold text-primary">76% Match</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar" style="width: 76%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Clean Minimal Footer -->
+  <footer class="py-4 border-top bg-white mt-auto">
+    <div class="container px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-badge" style="font-size: 0.75rem; padding: 0.15rem 0.45rem !important;">PF</div>
+        <span class="fw-bold text-dark small">PATHFORGE<span class="text-primary">.AI</span></span>
+        <span class="text-muted small ms-2">© 2026 PATHFORGE AI. All rights reserved.</span>
+      </div>
+      <div class="text-muted small">
+        <i class="bi bi-shield-lock me-1 text-success"></i> Private & Secured with PostgreSQL Row Level Security
+      </div>
+    </div>
+  </footer>
 
   <!-- Server Configuration variables injected via Jinja2 -->
   <script>
@@ -237,4 +487,3 @@
   <script src="/static/js/auth.js"></script>
 </body>
 </html>
-

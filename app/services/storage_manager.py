@@ -15,7 +15,9 @@ DB_PATH = DATA_DIR / "pathforge_local.db"
 
 
 def _get_db():
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(str(DB_PATH), timeout=15.0)
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA synchronous=NORMAL;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -43,6 +45,16 @@ def init_local_db():
             );
             CREATE INDEX IF NOT EXISTS idx_la_resume_id ON resume_analysis(resume_id);
             CREATE INDEX IF NOT EXISTS idx_la_user_id ON resume_analysis(user_id);
+            CREATE INDEX IF NOT EXISTS idx_la_user_resume ON resume_analysis(user_id, resume_id);
+            CREATE INDEX IF NOT EXISTS idx_cr_user ON career_recommendations(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sgr_user ON skill_gap_reports(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sgr_user_career ON skill_gap_reports(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_lr_user ON learning_roadmaps(user_id);
+            CREATE INDEX IF NOT EXISTS idx_lr_user_career ON learning_roadmaps(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_up_user ON user_projects(user_id);
+            CREATE INDEX IF NOT EXISTS idx_up_user_career ON user_projects(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_la_user ON learning_assessments(user_id);
+            CREATE INDEX IF NOT EXISTS idx_ra_user ON roadmap_adjustments(user_id);
 
             CREATE TABLE IF NOT EXISTS career_recommendations (
                 id TEXT PRIMARY KEY,

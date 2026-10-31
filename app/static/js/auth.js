@@ -68,8 +68,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ---------------------------------------------------------------------------
-  // 1. Check for Active Authenticated Session
+  // 1. Check for Active Authenticated Session (Fast-path from localStorage)
   // ---------------------------------------------------------------------------
+  const storedToken = localStorage.getItem("pathforge_auth_token");
+  if (storedToken) {
+    try {
+      const payload = JSON.parse(atob(storedToken.split(".")[1]));
+      if (payload.exp && payload.exp * 1000 > Date.now()) {
+        window.location.replace("/resume-analysis");
+        return;
+      }
+    } catch (e) {
+      localStorage.removeItem("pathforge_auth_token");
+    }
+  }
+
   if (supabase) {
     try {
       const { data: { session } } = await supabase.auth.getSession();

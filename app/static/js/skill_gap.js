@@ -112,37 +112,41 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auth Verification
   // ---------------------------------------------------------------------------
   async function initAuth() {
-    let session = null;
-    if (supabaseClient) {
-      try {
-        const { data } = await supabaseClient.auth.getSession();
-        session = data ? data.session : null;
-      } catch (err) {
-        console.warn("Session check error:", err);
-      }
-    }
-
-    if (session && session.access_token) {
-      setAuthenticatedState(session.access_token, session.user.email);
-      return;
-    }
-
+    // 1. Instant auth verification from localStorage (0ms UI render)
     if (currentToken) {
       try {
         const payload = JSON.parse(atob(currentToken.split(".")[1]));
         const isExpired = payload.exp && (payload.exp * 1000 < Date.now());
-        if (isExpired) {
-          localStorage.removeItem("pathforge_auth_token");
-          window.location.replace("/");
+        if (!isExpired) {
+          const email = payload.email || "Authenticated User";
+          setAuthenticatedState(currentToken, email);
+          
+          // Verify & refresh silently in background without blocking UI
+          if (supabaseClient) {
+            supabaseClient.auth.getSession().then(({ data }) => {
+              if (data && data.session && data.session.access_token) {
+                currentToken = data.session.access_token;
+                localStorage.setItem("pathforge_auth_token", currentToken);
+              }
+            }).catch(() => {});
+          }
           return;
         }
-        const email = payload.email || "Authenticated User";
-        setAuthenticatedState(currentToken, email);
-        return;
       } catch (e) {
         localStorage.removeItem("pathforge_auth_token");
-        window.location.replace("/");
-        return;
+      }
+    }
+
+    // 2. Fallback to Supabase getSession if localStorage token was missing
+    if (supabaseClient) {
+      try {
+        const { data } = await supabaseClient.auth.getSession();
+        if (data && data.session && data.session.access_token) {
+          setAuthenticatedState(data.session.access_token, data.session.user.email);
+          return;
+        }
+      } catch (err) {
+        console.warn("Session check error:", err);
       }
     }
 
@@ -356,9 +360,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Save Overrides Action
+  // Save Overrides Action with double-click prevention
   saveOverridesBtn?.addEventListener("click", async () => {
     if (!currentToken) return;
+    saveOverridesBtn.disabled = true;
+    saveOverridesBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Saving...';
     try {
       const res = await fetch("/skills/override", {
         method: "POST",
@@ -373,6 +379,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) {
       showAlert("Failed to save skill level adjustments.", "danger");
+    } finally {
+      saveOverridesBtn.disabled = false;
+      saveOverridesBtn.innerHTML = '<i class="bi bi-save me-1"></i> Save Level Adjustments';
     }
   });
 
