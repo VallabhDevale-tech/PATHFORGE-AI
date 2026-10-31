@@ -1,0 +1,221 @@
+/* =====================================================================
+   PATHFORGE AI - Authentication Page Styles
+   Ultra-High Contrast, Accessible Dark SaaS Aesthetic
+   ===================================================================== */
+
+:root {
+  --bg-dark: #070a13;
+  --bg-card: rgba(17, 24, 39, 0.98);
+  --border-subtle: rgba(148, 163, 184, 0.28);
+  --border-focus: #818cf8;
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --text-pure: #ffffff;
+  --text-label: #f8fafc;
+  --text-muted: #cbd5e1;
+  --input-bg: #111827;
+  --input-border: #475569;
+  --input-focus-border: #818cf8;
+}
+
+body.auth-body {
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 60%);
+  color: var(--text-pure);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.text-muted {
+  color: #cbd5e1 !important;
+}
+
+.auth-container {
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+  padding: 2.5rem 1.25rem;
+}
+
+/* Glass Card */
+.auth-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 22px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 35px rgba(99, 102, 241, 0.2);
+  padding: 2.75rem 2.25rem;
+}
+
+/* Brand Header */
+.brand-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.brand-badge {
+  background: var(--primary-gradient) !important;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Tab Switcher */
+.auth-nav-pills {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid var(--input-border);
+  border-radius: 9999px;
+  padding: 5px;
+  margin-bottom: 2.25rem;
+}
+
+.auth-nav-pills .nav-link {
+  color: #cbd5e1 !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.auth-nav-pills .nav-link:hover {
+  color: #ffffff !important;
+}
+
+.auth-nav-pills .nav-link.active {
+  background: var(--primary-gradient) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(129, 140, 248, 0.5);
+}
+
+/* Form Controls with High Contrast */
+.auth-label {
+  color: var(--text-label) !important;
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-control {
+  background-color: var(--input-bg) !important;
+  border: 1.5px solid var(--input-border) !important;
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.auth-control:focus {
+  background-color: #1e293b !important;
+  border-color: var(--input-focus-border) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.4) !important;
+}
+
+.auth-control::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* Password Toggle Input Group */
+.input-group > .auth-control.has-toggle {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
+}
+
+.btn-password-toggle {
+  background-color: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  border-left: none;
+  color: #cbd5e1;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  padding: 0 1rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-password-toggle:hover {
+  color: #ffffff;
+  border-color: var(--input-focus-border);
+}
+
+/* Links */
+.auth-link {
+  color: #818cf8 !important;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: all 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #c084fc !important;
+  text-decoration: underline;
+}
+
+/* Primary Submit Button */
+.btn-auth-submit {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  background: var(--primary-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(129, 140, 248, 0.4);
+  transition: all 0.25s ease;
+  margin-top: 1.25rem;
+}
+
+.btn-auth-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(168, 85, 247, 0.55);
+  color: #ffffff !important;
+}
+
+.btn-auth-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* High Contrast Alert Boxes */
+.auth-alert {
+  border-radius: 12px;
+  padding: 0.95rem 1.15rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.auth-alert-danger {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid #f87171;
+  color: #fee2e2;
+}
+
+.auth-alert-success {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid #34d399;
+  color: #d1fae5;
+}
+
+.auth-alert-info {
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid #38bdf8;
+  color: #e0f2fe;
+}

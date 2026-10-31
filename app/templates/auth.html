@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PATHFORGE AI | Sign In & Register</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Authentication Styles -->
+  <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    
+    <!-- Brand Header -->
+    <div class="text-center mb-4">
+      <div class="d-inline-flex align-items-center gap-2 mb-2">
+        <div class="brand-badge text-white rounded-3 p-1 px-2 fw-bold fs-5">PF</div>
+        <span class="brand-gradient fs-3 fw-bold">PATHFORGE<span class="text-white fw-light">.AI</span></span>
+      </div>
+      <p class="text-muted small mb-0">Your AI-Powered Career Transition Companion</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+      
+      <!-- Pills Navigation: Sign In vs Sign Up -->
+      <ul class="nav nav-pills nav-fill auth-nav-pills" id="authTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tabSignInBtn" data-bs-toggle="tab" data-bs-target="#paneSignIn" type="button" role="tab">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tabSignUpBtn" data-bs-toggle="tab" data-bs-target="#paneSignUp" type="button" role="tab">
+            <i class="bi bi-person-plus me-1"></i> Create Account
+          </button>
+        </li>
+      </ul>
+
+      <!-- Alert Notification Area -->
+      <div id="authAlert" class="auth-alert d-none" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <i id="authAlertIcon" class="bi fs-5"></i>
+          <span id="authAlertMessage"></span>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="authTabContent">
+        
+        <!-- ------------------------------------------------------------- -->
+        <!-- SIGN IN FORM                                                  -->
+        <!-- ------------------------------------------------------------- -->
+        <div class="tab-pane fade show active" id="paneSignIn" role="tabpanel">
+          <form id="signInForm" novalidate>
+            
+            <!-- Email Address -->
+            <div class="mb-3">
+              <label for="signInEmail" class="auth-label">
+                <span>Email Address</span>
+              </label>
+              <input 
+                type="email" 
+                id="signInEmail" 
+                class="form-control auth-control" 
+                placeholder="name@example.com" 
+                required 
+                autocomplete="email"
+              >
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="signInPassword" class="auth-label">
+                <span>Password</span>
+                <a href="#" id="forgotPasswordLink" class="auth-link">Forgot Password?</a>
+              </label>
+              <div class="input-group">
+                <input 
+                  type="password" 
+                  id="signInPassword" 
+                  class="form-control auth-control has-toggle" 
+                  placeholder="Enter your password" 
+                  required 
+                  autocomplete="current-password"
+                >
+                <button type="button" class="btn btn-password-toggle" id="toggleSignInPassword" title="Show/Hide password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="btnSignInSubmit" class="btn btn-auth-submit">
+              <span id="signInSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+              <span id="signInBtnText">Sign In to PATHFORGE</span>
+            </button>
+
+            <!-- Switch to Sign Up -->
+            <div class="text-center mt-4">
+              <span class="text-muted small">Don't have an account?</span>
+              <a href="#" id="switchToSignUp" class="auth-link ms-1">Create Account</a>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SIGN UP FORM                                                  -->
+        <!-- ------------------------------------------------------------- -->
+        <div class="tab-pane fade" id="paneSignUp" role="tabpanel">
+          <form id="signUpForm" novalidate>
+            
+            <!-- Full Name -->
+            <div class="mb-3">
+              <label for="signUpFullName" class="auth-label">
+                <span>Full Name</span>
+              </label>
+              <input 
+                type="text" 
+                id="signUpFullName" 
+                class="form-control auth-control" 
+                placeholder="Jane Doe" 
+                required 
+                autocomplete="name"
+              >
+            </div>
+
+            <!-- Email Address -->
+            <div class="mb-3">
+              <label for="signUpEmail" class="auth-label">
+                <span>Email Address</span>
+              </label>
+              <input 
+                type="email" 
+                id="signUpEmail" 
+                class="form-control auth-control" 
+                placeholder="name@example.com" 
+                required 
+                autocomplete="email"
+              >
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="signUpPassword" class="auth-label">
+                <span>Password (min. 6 characters)</span>
+              </label>
+              <div class="input-group">
+                <input 
+                  type="password" 
+                  id="signUpPassword" 
+                  class="form-control auth-control has-toggle" 
+                  placeholder="Create a strong password" 
+                  minlength="6" 
+                  required 
+                  autocomplete="new-password"
+                >
+                <button type="button" class="btn btn-password-toggle" id="toggleSignUpPassword" title="Show/Hide password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label for="signUpConfirmPassword" class="auth-label">
+                <span>Confirm Password</span>
+              </label>
+              <div class="input-group">
+                <input 
+                  type="password" 
+                  id="signUpConfirmPassword" 
+                  class="form-control auth-control has-toggle" 
+                  placeholder="Confirm your password" 
+                  minlength="6" 
+                  required 
+                  autocomplete="new-password"
+                >
+                <button type="button" class="btn btn-password-toggle" id="toggleSignUpConfirmPassword" title="Show/Hide password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="btnSignUpSubmit" class="btn btn-auth-submit">
+              <span id="signUpSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+              <span id="signUpBtnText">Create My Account</span>
+            </button>
+
+            <!-- Switch to Sign In -->
+            <div class="text-center mt-4">
+              <span class="text-muted small">Already have an account?</span>
+              <a href="#" id="switchToSignIn" class="auth-link ms-1">Sign In</a>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Security & Privacy footer note -->
+    <div class="text-center mt-4">
+      <p class="text-muted small mb-0" style="font-size: 0.78rem;">
+        <i class="bi bi-shield-check text-success me-1"></i> Secured by Supabase Authentication & PostgreSQL Row Level Security.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Server Configuration variables injected via Jinja2 -->
+  <script>
+    window.PATHFORGE_CONFIG = {
+      supabaseUrl: "{{ supabase_url }}",
+      supabaseKey: "{{ supabase_key }}"
+    };
+  </script>
+
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth Controller Script -->
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,133 @@
+/**
+ * PATHFORGE AI - Career Recommender & Skill Gap Analyzer Styling
+ * Ultra-High Contrast, Sleek Borders, Luminous Accents
+ */
+
+.text-muted {
+  color: #cbd5e1 !important;
+}
+
+.hover-light:hover {
+  color: #ffffff !important;
+}
+
+/* Match Score Circular Badges */
+.match-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 1.25rem;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.15) 75%);
+  border: 2px solid #818cf8;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.match-score-badge.high-match {
+  border-color: #34d399;
+  color: #ffffff !important;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(5, 150, 105, 0.15) 75%);
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+}
+
+/* Career Cards */
+.career-card {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  background: linear-gradient(180deg, rgba(22, 31, 52, 0.95) 0%, rgba(14, 20, 36, 0.98) 100%);
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.career-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(129, 140, 248, 0.7);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(99, 102, 241, 0.25);
+}
+
+.career-card.active-target {
+  border: 2px solid #818cf8;
+  background: linear-gradient(180deg, rgba(30, 41, 75, 0.95) 0%, rgba(49, 46, 129, 0.35) 100%);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.35);
+}
+
+/* High Contrast Categorized Skill Tags */
+.skill-tag-have {
+  background: rgba(16, 185, 129, 0.22);
+  color: #a7f3d0 !important;
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.skill-tag-improve {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fef08a !important;
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.skill-tag-missing {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecdd3 !important;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Phased Roadmap Cards */
+.roadmap-phase-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-left: 4px solid #6366f1;
+  border-radius: 0 14px 14px 0;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.roadmap-phase-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(3px);
+}
+
+.roadmap-phase-card:nth-child(2) {
+  border-left-color: #a855f7;
+}
+
+.roadmap-phase-card:nth-child(3) {
+  border-left-color: #ec4899;
+}
+
+/* Target Career Selector Card */
+.target-selector-box {
+  background: linear-gradient(135deg, rgba(26, 36, 62, 0.8) 0%, rgba(17, 24, 39, 0.95) 100%);
+  border: 1.5px solid rgba(99, 102, 241, 0.4);
+  border-radius: 18px;
+}

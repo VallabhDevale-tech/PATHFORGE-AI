@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PATHFORGE AI | AI Skill Gap Analyzer</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/resume_analysis.css">
+  <link rel="stylesheet" href="/static/css/career_recommender.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <div class="brand-badge bg-primary text-white rounded-3 p-1 px-2 fw-bold" style="background: var(--primary-gradient) !important;">PF</div>
+        <span class="brand-gradient fs-4">PATHFORGE<span class="text-white fw-light">.AI</span></span>
+      </a>
+
+      <!-- App Navigation Links -->
+      <div class="collapse navbar-collapse show" id="navbarNav">
+        <ul class="navbar-nav me-auto ms-4 mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/resume-analysis">
+              <i class="bi bi-file-earmark-person me-1"></i> Resume Analyzer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/career-recommender">
+              <i class="bi bi-compass me-1"></i> Career Recommender
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill active text-white fw-semibold bg-dark border border-secondary" href="/skill-gap-analyzer">
+              <i class="bi bi-bar-chart-steps me-1"></i> Skill Gap Analyzer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/resume-analysis#historySection">
+              <i class="bi bi-clock-history me-1"></i> History
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <!-- Auth Status Container -->
+        <div id="authStatusContainer" class="d-flex align-items-center gap-2">
+          <span id="userEmailBadge" class="badge rounded-pill bg-dark border border-secondary text-light px-3 py-2">
+            <i class="bi bi-person-circle me-1 text-primary"></i> <span id="userEmailText">Authenticated User</span>
+          </span>
+          <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2" title="Sign out of PATHFORGE AI">
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="container py-5">
+
+    <!-- Hero Header -->
+    <header class="text-center mb-5">
+      <div class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.5); color: #fce7f3; font-weight: 600;">
+        <i class="bi bi-bar-chart-steps me-1"></i> Feature 3: AI Skill Gap Analyzer
+      </div>
+      <h1 class="display-5 fw-bold mb-3 text-white">Bridge Your Skills to Reach <span class="brand-gradient">Your Target Role</span></h1>
+      <p class="lead mx-auto" style="color: #cbd5e1; max-width: 720px; font-weight: 450;">
+        Compare your verified resume skills against your selected career's core requirements. Gain actionable clarity on what you already possess, what needs depth, and what to build next.
+      </p>
+    </header>
+
+    <!-- Global Alert Box -->
+    <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
+      <div class="d-flex align-items-center gap-2">
+        <i id="alertIcon" class="bi fs-4"></i>
+        <div id="alertMessage" class="fw-medium"></div>
+      </div>
+    </div>
+
+    <!-- Career Target Selector Card -->
+    <section class="glass-card p-4 mb-5">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-7">
+          <label class="form-label text-light small fw-semibold">Target Career Role to Analyze Against</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-primary"><i class="bi bi-bullseye"></i></span>
+            <select id="targetCareerSelect" class="form-select auth-control">
+              <option value="" disabled selected>Loading career catalogue...</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-5 d-flex gap-2 align-items-end pt-md-4">
+          <button id="runSkillGapBtn" class="btn btn-primary-gradient w-100 rounded-pill py-2">
+            <span id="gapSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            <i class="bi bi-lightning-charge me-1"></i> Run Skill Gap Analysis
+          </button>
+          <a href="/career-recommender" class="btn btn-outline-custom rounded-pill px-3 py-2" title="Switch in Career Recommender">
+            <i class="bi bi-compass"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading Placeholder -->
+    <div id="gapLoadingPlaceholder" class="glass-card p-5 text-center mb-5 d-none">
+      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+      <h4 class="fw-bold text-white">Analyzing Skill Discrepancies...</h4>
+      <p class="text-muted">Comparing your documented skills, projects, and coursework against the target career requirements.</p>
+    </div>
+
+    <!-- Skill Gap Report Dashboard -->
+    <section id="skillGapReportSection" class="d-none">
+
+      <!-- Overall Match Summary Card -->
+      <div class="glass-card p-4 p-md-5 mb-5" style="background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 70%), var(--card-bg);">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-4 text-center border-end-lg border-secondary border-opacity-50">
+            <div class="d-inline-flex flex-column align-items-center justify-content-center">
+              <div class="display-3 fw-bold text-white mb-0" id="overallMatchNumber">0%</div>
+              <div class="badge bg-primary bg-opacity-25 text-primary border border-primary px-3 py-1 rounded-pill mt-2">
+                Overall Match Score
+              </div>
+            </div>
+            <div class="text-muted small mt-2" id="matchVerdictText">Evaluating profile evidence...</div>
+          </div>
+
+          <div class="col-lg-8">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="text-light fw-semibold">Target Career Alignment</span>
+              <span class="text-primary fw-bold" id="targetCareerBadge">Career Title</span>
+            </div>
+            
+            <div class="progress bg-dark mb-4" style="height: 12px; border-radius: 9999px;">
+              <div id="matchProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%; background: var(--primary-gradient);"></div>
+            </div>
+
+            <!-- Breakdown Stat Pills -->
+            <div class="row g-2 text-center">
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                  <div class="fs-4 fw-bold text-success" id="countSkillsHave">0</div>
+                  <div class="text-muted" style="font-size: 0.75rem;">Skills You Have</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                  <div class="fs-4 fw-bold text-warning" id="countSkillsImprove">0</div>
+                  <div class="text-muted" style="font-size: 0.75rem;">Skills to Improve</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);">
+                  <div class="fs-4 fw-bold text-danger" id="countSkillsMissing">0</div>
+                  <div class="text-muted" style="font-size: 0.75rem;">Not Found in Profile</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Claude AI Strategic Mentor Advice (If available) -->
+      <div id="mentorAdviceCard" class="glass-card p-4 mb-5 d-none border-primary border-opacity-50" style="background: rgba(99, 102, 241, 0.06);">
+        <div class="d-flex align-items-start gap-3">
+          <div class="card-title-icon m-0" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">
+            <i class="bi bi-cpu fs-4"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white fs-6 mb-1">AI Career Advisor Strategic Guidance</div>
+            <p class="text-light small mb-0" id="mentorAdviceText" style="line-height: 1.6;"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Classification Columns -->
+      <div class="row g-4 mb-5">
+        
+        <!-- Category A: Skills You Have -->
+        <div class="col-lg-4">
+          <div class="glass-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary border-opacity-50 pb-2">
+              <span class="fw-bold text-success fs-6">
+                <i class="bi bi-shield-check me-1"></i> A. Skills You Have
+              </span>
+              <span class="badge bg-success bg-opacity-25 text-success border border-success" id="badgeHaveCount">0</span>
+            </div>
+            <p class="text-muted small mb-3">Skills supported by factual evidence in your resume or project contributions.</p>
+            <div id="skillsHaveList" class="d-flex flex-column gap-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Category B: Skills to Improve -->
+        <div class="col-lg-4">
+          <div class="glass-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary border-opacity-50 pb-2">
+              <span class="fw-bold text-warning fs-6">
+                <i class="bi bi-arrow-up-circle me-1"></i> B. Skills to Improve
+              </span>
+              <span class="badge bg-warning bg-opacity-25 text-warning border border-warning" id="badgeImproveCount">0</span>
+            </div>
+            <p class="text-muted small mb-3">Identified in profile, but needing deeper architectural knowledge or hands-on mastery.</p>
+            <div id="skillsImproveList" class="d-flex flex-column gap-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Category C: Missing or Not Found in Profile -->
+        <div class="col-lg-4">
+          <div class="glass-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary border-opacity-50 pb-2">
+              <span class="fw-bold text-danger fs-6">
+                <i class="bi bi-question-circle me-1"></i> C. Not Found in Profile
+              </span>
+              <span class="badge bg-danger bg-opacity-25 text-danger border border-danger" id="badgeMissingCount">0</span>
+            </div>
+            <p class="text-muted small mb-3">Core industry requirements where no supporting evidence was detected in your resume.</p>
+            <div id="skillsMissingList" class="d-flex flex-column gap-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Priority-Based Skill Gap Breakdown Table -->
+      <section class="glass-card p-4 p-md-5 mb-5">
+        <h4 class="fw-bold mb-2"><i class="bi bi-list-check text-primary me-2"></i> Priority Skill Gap Breakdown</h4>
+        <p class="text-muted small mb-4">Ranked by importance for employers hiring for your target career role.</p>
+
+        <div class="table-responsive">
+          <table class="table table-dark-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Skill</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Why It Matters</th>
+                <th>Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody id="priorityGapsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Phased Learning Roadmap -->
+      <section class="glass-card p-4 p-md-5 mb-5">
+        <h4 class="fw-bold mb-2"><i class="bi bi-signpost-2 text-primary me-2"></i> Personalized Learning Roadmap</h4>
+        <p class="text-muted small mb-4">Structured three-phase timeline designed to close your skill gaps sequentially.</p>
+
+        <div class="row g-3" id="learningRoadmapContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- Recommended Portfolio Projects -->
+      <section class="glass-card p-4 p-md-5 mb-5">
+        <h4 class="fw-bold mb-2"><i class="bi bi-code-square text-primary me-2"></i> Recommended Portfolio Projects</h4>
+        <p class="text-muted small mb-4">Hands-on applications specifically structured to provide verifiable evidence of your new skills.</p>
+
+        <div class="row g-4" id="recommendedProjectsContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Disclaimer Note -->
+    <div class="mt-5 text-center">
+      <p class="text-muted small" style="font-size: 0.8rem;">
+        <i class="bi bi-info-circle me-1"></i>
+        Disclaimer: Skill gap analyses are calculated against standardized role profiles and do not represent employment eligibility guarantees. Skills classified as 'Not found in profile' reflect absence of documented evidence in the uploaded resume.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- Server Configuration variables injected via Jinja2 -->
+  <script>
+    window.PATHFORGE_CONFIG = {
+      supabaseUrl: "{{ supabase_url }}",
+      supabaseKey: "{{ supabase_key }}"
+    };
+  </script>
+
+  <!-- Supabase JS Client for client-side Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Skill Gap JS -->
+  <script src="/static/js/skill_gap.js"></script>
+</body>
+</html>
+

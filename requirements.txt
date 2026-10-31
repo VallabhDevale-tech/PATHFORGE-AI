@@ -1,4 +1,3 @@
-
 fastapi
 uvicorn[standard]
 jinja2
@@ -20,6 +19,7 @@ python-docx
 
 # AI integration
 openai
+anthropic
 
 # Data validation and HTTP
 pydantic
