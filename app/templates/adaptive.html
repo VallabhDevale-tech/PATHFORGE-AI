@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PATHFORGE AI | Adaptive Learning & Continuous Intelligence (Feature 6)</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/resume_analysis.css">
+  <link rel="stylesheet" href="/static/css/career_recommender.css">
+</head>
+<body>
+
+  <!-- Top Navigation (All 6 Features) -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <div class="brand-badge bg-primary text-white rounded-3 p-1 px-2 fw-bold" style="background: var(--primary-gradient) !important;">PF</div>
+        <span class="brand-gradient fs-4">PATHFORGE<span class="text-white fw-light">.AI</span></span>
+      </a>
+
+      <div class="collapse navbar-collapse show" id="navbarNav">
+        <ul class="navbar-nav me-auto ms-4 mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/resume-analysis">
+              <i class="bi bi-file-earmark-person me-1"></i> Resume Analyzer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/career-recommender">
+              <i class="bi bi-compass me-1"></i> Career Recommender
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/skill-gap-analyzer">
+              <i class="bi bi-bar-chart-steps me-1"></i> Skill Gap Analyzer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/personalized-roadmap">
+              <i class="bi bi-signpost-2 me-1"></i> Learning Roadmap
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/project-recommendations">
+              <i class="bi bi-code-square me-1"></i> Projects & Portfolio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 py-2 rounded-pill active text-white fw-semibold bg-dark border border-secondary" href="/adaptive-learning">
+              <i class="bi bi-lightning-charge me-1"></i> Adaptive Learning
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <div id="authStatusContainer" class="d-flex align-items-center gap-2">
+          <span id="userEmailBadge" class="badge rounded-pill bg-dark border border-secondary text-light px-3 py-2">
+            <i class="bi bi-person-circle me-1 text-primary"></i> <span id="userEmailText">Authenticated User</span>
+          </span>
+          <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2" title="Sign out">
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container py-5">
+
+    <!-- Hero Header -->
+    <header class="text-center mb-5">
+      <div class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.5); color: #f3e8ff; font-weight: 600;">
+        <i class="bi bi-cpu me-1"></i> Feature 6: Adaptive Learning & Continuous Career Intelligence
+      </div>
+      <h1 class="display-5 fw-bold mb-3 text-white">Dynamic Feedback for <span class="brand-gradient">Continuous Growth</span></h1>
+      <p class="lead mx-auto" style="color: #cbd5e1; max-width: 760px;">
+        Monitors your progress across roadmap milestones, quizzes, and practical projects. Uncovers weak areas, recommends your next highest-leverage activity, and safely adapts your curriculum with user approval.
+      </p>
+    </header>
+
+    <!-- Global Alert Box -->
+    <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
+      <div class="d-flex align-items-center gap-2">
+        <i id="alertIcon" class="bi fs-4"></i>
+        <div id="alertMessage" class="fw-medium"></div>
+      </div>
+    </div>
+
+    <!-- "WHAT SHOULD I LEARN NEXT?" HERO CARD -->
+    <section class="glass-card p-4 p-md-5 mb-5 border-primary border-opacity-50" style="background: linear-gradient(135deg, rgba(30, 41, 75, 0.95) 0%, rgba(49, 46, 129, 0.4) 100%);">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <div class="badge bg-primary bg-opacity-25 text-white border border-primary px-3 py-1 rounded-pill mb-2">
+            <i class="bi bi-compass me-1"></i> What Should I Learn Next?
+          </div>
+          <h3 class="fw-bold text-white mb-2" id="nextActionTitle">Evaluating your optimal next learning step...</h3>
+          <p class="text-white mb-3" id="nextActionWhy" style="font-size: 0.95rem; line-height: 1.6;"></p>
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="badge bg-dark border border-secondary text-light px-3 py-2" id="nextActionSkillBadge">Skill: General</span>
+            <span class="text-white small" id="nextActionTimeBadge"><i class="bi bi-clock me-1 text-primary"></i> Est. ~45 mins</span>
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <button id="launchNextActionBtn" class="btn btn-primary-gradient rounded-pill px-4 py-3 fw-bold fs-6">
+            <i class="bi bi-play-circle me-1"></i> Start Recommended Activity
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEARNING VELOCITY & PROGRESS METRICS -->
+    <section class="row g-4 mb-5 text-center">
+      <div class="col-md-3">
+        <div class="glass-card p-4 h-100">
+          <div class="fs-1 fw-bold text-primary mb-1" id="statRoadmapPct">0%</div>
+          <div class="fw-semibold text-white small">Roadmap Completion</div>
+          <div class="text-muted" style="font-size: 0.75rem;" id="statActivitiesCount">0 / 0 Activities</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="glass-card p-4 h-100">
+          <div class="fs-1 fw-bold text-warning mb-1" id="statInProgressCount">0</div>
+          <div class="fw-semibold text-white small">In Progress Tasks</div>
+          <div class="text-muted" style="font-size: 0.75rem;">Active weekly focus</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="col-12 glass-card p-4 h-100">
+          <div class="fs-1 fw-bold text-success mb-1" id="statProjectsCount">0</div>
+          <div class="fw-semibold text-white small">Completed Projects</div>
+          <div class="text-muted" style="font-size: 0.75rem;">Verified in portfolio</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="glass-card p-4 h-100">
+          <div class="fs-1 fw-bold text-info mb-1" id="statQuizAvg">0%</div>
+          <div class="fw-semibold text-white small">Avg. Assessment Score</div>
+          <div class="text-muted" style="font-size: 0.75rem;" id="statQuizCount">0 Quizzes Taken</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROPOSED ROADMAP ADJUSTMENTS (IF ANY) -->
+    <div id="adjustmentNoticeCard" class="glass-card p-4 mb-5 d-none border-warning border-opacity-50" style="background: rgba(245, 158, 11, 0.08);">
+      <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-start gap-3">
+          <div class="rounded-circle p-3 d-flex align-items-center justify-content-center" style="background: rgba(245, 158, 11, 0.2); width: 44px; height: 44px;">
+            <i class="bi bi-sliders text-warning fs-5"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold text-white mb-1">Adaptive Curriculum Adjustment Proposed</h5>
+            <p class="text-white small mb-2" id="adjustmentReasonText"></p>
+            <ul class="text-white small mb-0 ps-3" id="adjustmentChangesList"></ul>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button id="rejectAdjustmentBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+            Keep Current Plan
+          </button>
+          <button id="acceptAdjustmentBtn" class="btn btn-success btn-sm rounded-pill px-4">
+            <i class="bi bi-check2 me-1"></i> Accept Adjustments
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEAK AREAS VS DEMONSTRATED SKILLS RADAR -->
+    <section class="glass-card p-4 p-md-5 mb-5">
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 border-bottom border-secondary border-opacity-50 pb-3">
+        <div>
+          <h4 class="fw-bold text-white mb-1"><i class="bi bi-radar text-primary me-2"></i> Evidentiary Skill Diagnostics</h4>
+          <p class="text-muted small mb-0">Continuously updated from your quiz results, project submissions, and roadmap milestones.</p>
+        </div>
+        <button id="checkAdjustmentsBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+          <i class="bi bi-cpu me-1"></i> Analyze for Roadmap Adjustments
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- 1. Demonstrated Proficiency -->
+        <div class="col-lg-6">
+          <div class="p-3 rounded-3 h-100" style="background: rgba(16, 185, 129, 0.08); border: 1.5px solid rgba(52, 211, 153, 0.4);">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-success border-opacity-25 pb-2">
+              <span class="fw-bold text-success fs-6"><i class="bi bi-check-circle-fill me-1"></i> Demonstrated Proficiency</span>
+              <span class="badge bg-success text-white small" id="countDemonstratedBadge">0</span>
+            </div>
+            <div id="demonstratedList" class="d-flex flex-column gap-2">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Needs More Practice -->
+        <div class="col-lg-6">
+          <div class="p-3 rounded-3 h-100" style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid rgba(251, 191, 36, 0.4);">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-warning border-opacity-25 pb-2">
+              <span class="fw-bold text-warning fs-6"><i class="bi bi-exclamation-circle-fill me-1"></i> Needs More Practice / Review</span>
+              <span class="badge bg-warning text-dark small" id="countNeedsPracticeBadge">0</span>
+            </div>
+            <div id="needsPracticeList" class="d-flex flex-column gap-2">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Topic Assessment Quiz Modal -->
+  <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content glass-card border-0 text-white" style="background: #0f172a; border: 1.5px solid var(--border-subtle);">
+        <div class="modal-header border-secondary border-opacity-50">
+          <div>
+            <span class="badge bg-primary mb-1">Interactive Topic Quiz</span>
+            <h5 class="modal-title fw-bold text-white" id="quizModalTitle">Skill Assessment</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="quizModalBody">
+          <!-- Populated dynamically with questions -->
+        </div>
+        <div class="modal-footer border-secondary border-opacity-50">
+          <button type="button" class="btn btn-outline-custom rounded-pill px-3" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary-gradient rounded-pill px-4" id="submitQuizBtn">
+            <i class="bi bi-send-check me-1"></i> Submit Assessment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.PATHFORGE_CONFIG = {
+      supabaseUrl: "{{ supabase_url }}",
+      supabaseKey: "{{ supabase_key }}"
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/adaptive.js"></script>
+</body>
+</html>
+

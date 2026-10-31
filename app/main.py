@@ -17,11 +17,14 @@ from app.database import SUPABASE_URL, SUPABASE_KEY
 from app.routers.resume_routes import router as resume_router
 from app.routers.career_routes import router as career_router
 from app.routers.skill_gap_routes import router as skill_gap_router
+from app.routers.roadmap_routes import router as roadmap_router
+from app.routers.project_routes import router as project_router
+from app.routers.adaptive_routes import router as adaptive_router
 
 app = FastAPI(
     title="PATHFORGE AI",
-    description="Your AI Career Transition Companion - Complete Career Intelligence System",
-    version="2.0.0"
+    description="Your AI Career Transition Companion - Complete Career Intelligence & Adaptive Learning System",
+    version="2.5.0"
 )
 
 STATIC_DIR = APP_DIR / "static"
@@ -41,6 +44,9 @@ templates = Jinja2Templates(
 app.include_router(resume_router)
 app.include_router(career_router)
 app.include_router(skill_gap_router)
+app.include_router(roadmap_router)
+app.include_router(project_router)
+app.include_router(adaptive_router)
 
 
 @app.get("/", response_class=HTMLResponse, summary="Authentication Page - Sign In & Register")
@@ -72,7 +78,14 @@ def health():
     return {
         "status": "success",
         "message": "Backend is running successfully",
-        "features": ["Resume Analysis", "Career Path Recommender", "AI Skill Gap Analyzer"]
+        "features": [
+            "Feature 1: Resume Analysis Engine",
+            "Feature 2: AI Career Path Recommender",
+            "Feature 3: AI Skill Gap Analyzer (Corrected)",
+            "Feature 4: Personalized Roadmap",
+            "Feature 5: Project Recommendations",
+            "Feature 6: Adaptive Learning"
+        ]
     }
 
 
@@ -111,5 +124,44 @@ async def skill_gap_page(request: Request):
             "supabase_url": SUPABASE_URL,
             "supabase_key": SUPABASE_KEY,
             "active_page": "skill-gap-analyzer"
+        }
+    )
+
+
+@app.get("/personalized-roadmap", response_class=HTMLResponse, summary="Personalized Learning Roadmap Dashboard")
+async def personalized_roadmap_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="roadmap.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "personalized-roadmap"
+        }
+    )
+
+
+@app.get("/project-recommendations", response_class=HTMLResponse, summary="Project Recommendations & Portfolio Dashboard")
+async def project_recommendations_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="projects.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "project-recommendations"
+        }
+    )
+
+
+@app.get("/adaptive-learning", response_class=HTMLResponse, summary="Adaptive Learning & Intelligence Dashboard")
+async def adaptive_learning_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="adaptive.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "adaptive-learning"
         }
     )

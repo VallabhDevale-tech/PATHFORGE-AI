@@ -1,14 +1,18 @@
 /**
- * PATHFORGE AI - AI Skill Gap Analyzer Client Script
- * Handles target career selection, comparing profile skills, rendering
- * the 3-category classification dashboard, prioritized gap table, and project suggestions.
+ * PATHFORGE AI - AI Skill Gap Analyzer Client Script (Feature 3 Corrected)
+ * Implements the complete 8-step workflow:
+ * Resume selection / upload -> Profile preview & level adjustments -> Target career selection
+ * -> Deterministic skill gap comparison -> Comprehensive report with transparent coverage metrics.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentToken = localStorage.getItem("pathforge_auth_token") || "";
   let supabaseClient = null;
   let catalogue = [];
+  let userResumes = [];
+  let currentResumeId = null;
   let currentTargetSlug = null;
+  let activeOverrides = {};
 
   // Initialize Supabase JS client
   if (window.PATHFORGE_CONFIG && window.PATHFORGE_CONFIG.supabaseUrl && window.PATHFORGE_CONFIG.supabaseKey) {
@@ -31,16 +35,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const alertIcon = document.getElementById("alertIcon");
   const alertMessage = document.getElementById("alertMessage");
 
+  // Step 1: Resume elements
+  const resumeSelect = document.getElementById("resumeSelect");
+  const resumeStatusBadge = document.getElementById("resumeStatusBadge");
+  const directResumeInput = document.getElementById("directResumeInput");
+  const directUploadSpinner = document.getElementById("directUploadSpinner");
+
+  // Step 2: Career elements
   const targetCareerSelect = document.getElementById("targetCareerSelect");
+  const selectedRoleTitle = document.getElementById("selectedRoleTitle");
+  const selectedRoleDesc = document.getElementById("selectedRoleDesc");
   const runSkillGapBtn = document.getElementById("runSkillGapBtn");
   const gapSpinner = document.getElementById("gapSpinner");
   const gapLoadingPlaceholder = document.getElementById("gapLoadingPlaceholder");
 
+  // Step 3 & 4: Profile Review elements
+  const previewCandidateName = document.getElementById("previewCandidateName");
+  const previewCandidateEmail = document.getElementById("previewCandidateEmail");
+  const previewEducationList = document.getElementById("previewEducationList");
+  const previewProjectsList = document.getElementById("previewProjectsList");
+  const profileSkillsChipContainer = document.getElementById("profileSkillsChipContainer");
+  const saveOverridesBtn = document.getElementById("saveOverridesBtn");
+  const addCustomSkillBtn = document.getElementById("addCustomSkillBtn");
+
+  // Step 8: Report elements
   const skillGapReportSection = document.getElementById("skillGapReportSection");
   const overallMatchNumber = document.getElementById("overallMatchNumber");
   const targetCareerBadge = document.getElementById("targetCareerBadge");
   const matchProgressBar = document.getElementById("matchProgressBar");
   const matchVerdictText = document.getElementById("matchVerdictText");
+  const downloadReportBtn = document.getElementById("downloadReportBtn");
 
   const countSkillsHave = document.getElementById("countSkillsHave");
   const countSkillsImprove = document.getElementById("countSkillsImprove");
@@ -58,8 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mentorAdviceText = document.getElementById("mentorAdviceText");
 
   const priorityGapsTableBody = document.getElementById("priorityGapsTableBody");
-  const learningRoadmapContainer = document.getElementById("learningRoadmapContainer");
-  const recommendedProjectsContainer = document.getElementById("recommendedProjectsContainer");
+  const categoryBreakdownContainer = document.getElementById("categoryBreakdownContainer");
 
   // ---------------------------------------------------------------------------
   // Alert Helper
@@ -145,13 +168,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Workflow Initialization
+  // Complete Workflow Initialization
   // ---------------------------------------------------------------------------
   async function initializeSkillGapWorkflow() {
     await loadCatalogue();
+    await loadUserResumes();
     await loadUserSelectedCareer();
   }
 
+  // 1. Load Career Catalogue
   async function loadCatalogue() {
     try {
       const res = await fetch("/careers/catalogue");
@@ -161,12 +186,214 @@ document.addEventListener("DOMContentLoaded", () => {
         targetCareerSelect.innerHTML = catalogue.map(role =>
           `<option value="${role.slug}">${role.title} (${role.category})</option>`
         ).join("");
+
+        updateCareerDetailsPreview(targetCareerSelect.value);
       }
     } catch (e) {
       console.warn("Could not load career catalogue:", e);
     }
   }
 
+  targetCareerSelect?.addEventListener("change", () => {
+    updateCareerDetailsPreview(targetCareerSelect.value);
+  });
+
+  function updateCareerDetailsPreview(slug) {
+    const role = catalogue.find(r => r.slug === slug);
+    if (role) {
+      selectedRoleTitle.textContent = `${role.title} (${role.category})`;
+      selectedRoleDesc.textContent = role.description;
+    }
+  }
+
+  // 2. Load User's Analyzed Resumes History
+  async function loadUserResumes() {
+    if (!currentToken) return;
+
+    try {
+      const res = await fetch("/resumes", {
+        headers: { "Authorization": `Bearer ${currentToken}` }
+      });
+      const data = await res.json();
+
+      if (res.ok && Array.isArray(data) && data.length > 0) {
+        userResumes = data;
+        resumeStatusBadge.textContent = `${userResumes.length} Resume(s) Found`;
+        resumeStatusBadge.className = "badge bg-success text-white small";
+
+        resumeSelect.innerHTML = userResumes.map(r => {
+          const dt = r.created_at ? new Date(r.created_at).toLocaleDateString() : "";
+          return `<option value="${r.id}">${r.file_name} (${dt})</option>`;
+        }).join("");
+
+        currentResumeId = userResumes[0].id;
+        loadProfilePreview(currentResumeId);
+      } else {
+        resumeStatusBadge.textContent = "No Resume Yet";
+        resumeStatusBadge.className = "badge bg-warning text-dark small";
+        resumeSelect.innerHTML = '<option value="" disabled selected>No resume uploaded yet. Please upload above.</option>';
+        showAlert("Please upload your resume to start the Skill Gap Analysis.", "warning");
+      }
+    } catch (e) {
+      console.warn("Could not fetch user resumes:", e);
+    }
+  }
+
+  resumeSelect?.addEventListener("change", () => {
+    currentResumeId = resumeSelect.value;
+    loadProfilePreview(currentResumeId);
+  });
+
+  // Direct Resume Upload Handler (Step 2 Upload alternative)
+  directResumeInput?.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    hideAlert();
+    directUploadSpinner.classList.remove("d-none");
+    showAlert(`Uploading and analyzing ${file.name}...`, "info");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/resumes/upload", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${currentToken}` },
+        body: formData
+      });
+
+      directUploadSpinner.classList.add("d-none");
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || "Failed to process resume file.");
+      }
+
+      showAlert(`Resume '${file.name}' processed and verified successfully!`, "success");
+      await loadUserResumes();
+      if (data.resume?.id) {
+        currentResumeId = data.resume.id;
+        resumeSelect.value = currentResumeId;
+        loadProfilePreview(currentResumeId);
+      }
+    } catch (err) {
+      directUploadSpinner.classList.add("d-none");
+      showAlert(err.message, "danger");
+    }
+  });
+
+  // 3. Load Candidate Extracted Profile Preview (Step 4)
+  async function loadProfilePreview(resumeId) {
+    if (!currentToken) return;
+
+    try {
+      const url = resumeId ? `/skills/preview-profile?resume_id=${resumeId}` : `/skills/preview-profile`;
+      const res = await fetch(url, {
+        headers: { "Authorization": `Bearer ${currentToken}` }
+      });
+      const data = await res.json();
+
+      if (res.ok && data.has_resume) {
+        previewCandidateName.textContent = data.candidate_name || "Verified Candidate";
+        previewCandidateEmail.textContent = data.email || "";
+
+        // Education
+        const edu = data.education || [];
+        if (edu.length > 0) {
+          previewEducationList.innerHTML = edu.map(e => `<div><strong>${e.degree || 'Degree'}</strong>, ${e.institution || 'University'} (${e.graduation_year || ''})</div>`).join("");
+        } else {
+          previewEducationList.textContent = "None explicitly documented in resume.";
+        }
+
+        // Projects & Experience
+        const projs = data.projects || [];
+        const exp = data.work_experience || [];
+        let summaryList = [];
+        if (exp.length > 0) summaryList.push(`${exp.length} Work Experience position(s)`);
+        if (projs.length > 0) summaryList.push(`${projs.length} Practical Project(s)`);
+        previewProjectsList.innerHTML = summaryList.length > 0 ? summaryList.join(" &bull; ") : "No explicit items found.";
+
+        // Skill Chips with Level Selector (1-4)
+        activeOverrides = data.overrides || {};
+        renderSkillsReviewChips(data.profile_skills || []);
+      }
+    } catch (e) {
+      console.warn("Could not preview profile:", e);
+    }
+  }
+
+  function renderSkillsReviewChips(skills) {
+    if (!skills || skills.length === 0) {
+      profileSkillsChipContainer.innerHTML = '<span class="text-muted small">No technical skills detected yet in this resume. Click "+ Add Missing Skill" to add your skills.</span>';
+      return;
+    }
+
+    const levelNames = { 1: "1: Beg", 2: "2: Int", 3: "3: Adv", 4: "4: Exp" };
+
+    profileSkillsChipContainer.innerHTML = skills.map(s => {
+      const currentLevel = activeOverrides[s.name] || s.level || 1;
+      return `
+        <div class="skill-level-chip">
+          <span class="text-white small fw-bold">${s.name}</span>
+          <select class="skill-level-select" data-skill="${s.name}">
+            <option value="1" ${currentLevel === 1 ? 'selected' : ''}>${levelNames[1]}</option>
+            <option value="2" ${currentLevel === 2 ? 'selected' : ''}>${levelNames[2]}</option>
+            <option value="3" ${currentLevel === 3 ? 'selected' : ''}>${levelNames[3]}</option>
+            <option value="4" ${currentLevel === 4 ? 'selected' : ''}>${levelNames[4]}</option>
+          </select>
+        </div>
+      `;
+    }).join("");
+
+    // Attach level change listeners
+    document.querySelectorAll(".skill-level-select").forEach(sel => {
+      sel.addEventListener("change", (e) => {
+        const skill = e.target.dataset.skill;
+        const lvl = parseInt(e.target.value);
+        activeOverrides[skill] = lvl;
+      });
+    });
+  }
+
+  // Save Overrides Action
+  saveOverridesBtn?.addEventListener("click", async () => {
+    if (!currentToken) return;
+    try {
+      const res = await fetch("/skills/override", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${currentToken}`
+        },
+        body: JSON.stringify(activeOverrides)
+      });
+      if (res.ok) {
+        showAlert("Skill level self-assessments saved successfully!", "success");
+      }
+    } catch (e) {
+      showAlert("Failed to save skill level adjustments.", "danger");
+    }
+  });
+
+  // Add Custom Skill Action
+  addCustomSkillBtn?.addEventListener("click", () => {
+    const newSkill = prompt("Enter the skill name to add to your profile:");
+    if (!newSkill || !newSkill.trim()) return;
+
+    const trimmed = newSkill.trim();
+    activeOverrides[trimmed] = 2; // Default Intermediate
+    // Re-render
+    showAlert(`Added '${trimmed}' (Level 2: Intermediate). Click 'Save Level Adjustments' to preserve.`, "info");
+    const currentChips = Array.from(document.querySelectorAll(".skill-level-select")).map(sel => ({
+      name: sel.dataset.skill,
+      level: parseInt(sel.value)
+    }));
+    currentChips.push({ name: trimmed, level: 2 });
+    renderSkillsReviewChips(currentChips);
+  });
+
+  // 4. Load User Selected Target Career (from Feature 2)
   async function loadUserSelectedCareer() {
     if (!currentToken) return;
 
@@ -179,27 +406,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.ok && data.has_selection && data.data) {
         currentTargetSlug = data.data.career_slug;
         targetCareerSelect.value = currentTargetSlug;
-        // Automatically run or fetch analysis
-        executeSkillGapAnalysis(currentTargetSlug);
-      } else {
-        // Fallback default: select first role or prompt user
-        if (catalogue.length > 0) {
-          targetCareerSelect.value = catalogue[0].slug;
-          showAlert("No target career selected yet. You can pick any career below or select one from the Career Recommender.", "info");
-        }
+        updateCareerDetailsPreview(currentTargetSlug);
       }
     } catch (e) {
       console.warn("Could not load user selection:", e);
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Run Skill Gap Analysis
-  // ---------------------------------------------------------------------------
+  // 5. Execute Deterministic Skill Gap Analysis (Step 6 & 7)
   runSkillGapBtn?.addEventListener("click", () => {
     const selectedSlug = targetCareerSelect.value;
     if (!selectedSlug) {
-      showAlert("Please choose a target career to analyze.", "warning");
+      showAlert("Please choose a target career to analyze against.", "warning");
       return;
     }
     executeSkillGapAnalysis(selectedSlug);
@@ -212,6 +430,12 @@ document.addEventListener("DOMContentLoaded", () => {
     runSkillGapBtn.disabled = true;
     gapSpinner.classList.remove("d-none");
 
+    const payload = {
+      career_slug: careerSlug,
+      resume_id: currentResumeId || null,
+      user_skill_overrides: activeOverrides
+    };
+
     try {
       const res = await fetch("/skills/analyze", {
         method: "POST",
@@ -219,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${currentToken}`
         },
-        body: JSON.stringify({ career_slug: careerSlug })
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
@@ -228,15 +452,11 @@ document.addEventListener("DOMContentLoaded", () => {
       gapSpinner.classList.add("d-none");
 
       if (!res.ok) {
-        if (res.status === 400 && data.detail?.includes("No resume")) {
-          showAlert("Please upload a resume first on the Resume Analyzer page before running skill gap analysis.", "warning");
-          return;
-        }
         throw new Error(data.detail || "Skill gap analysis failed.");
       }
 
       renderSkillGapReport(data.data);
-      showAlert(`Skill gap report for ${data.data.career_title} generated successfully!`, "success");
+      showAlert(`Skill gap report for ${data.data.target_career} computed successfully!`, "success");
 
     } catch (err) {
       gapLoadingPlaceholder.classList.add("d-none");
@@ -246,37 +466,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Render Skill Gap Dashboard
-  // ---------------------------------------------------------------------------
+  // 6. Render Comprehensive Skill Gap Report Dashboard (Step 8)
   function renderSkillGapReport(report) {
     skillGapReportSection.classList.remove("d-none");
     skillGapReportSection.scrollIntoView({ behavior: "smooth" });
 
-    // Overall Score
-    const matchPct = report.overall_match_percentage || 0;
-    overallMatchNumber.textContent = `${Math.round(matchPct)}%`;
-    matchProgressBar.style.width = `${matchPct}%`;
-    targetCareerBadge.textContent = report.career_title;
+    // Download button link
+    downloadReportBtn.href = `/skills/download?career_slug=${report.career_slug}`;
 
-    if (matchPct >= 75) {
-      matchVerdictText.textContent = "High Compatibility: Minor specific bridges needed.";
-    } else if (matchPct >= 50) {
-      matchVerdictText.textContent = "Moderate Compatibility: Clear path to role readiness.";
+    // Score & Badges
+    const coveragePct = report.coverage_percentage || 0;
+    overallMatchNumber.textContent = `${Math.round(coveragePct)}%`;
+    matchProgressBar.style.width = `${coveragePct}%`;
+    targetCareerBadge.textContent = `${report.target_career} (${report.category})`;
+
+    if (coveragePct >= 65) {
+      matchVerdictText.textContent = "High Skill Alignment: Minor specific depth bridges needed.";
+    } else if (coveragePct >= 35) {
+      matchVerdictText.textContent = "Moderate Skill Alignment: Clear actionable path to production competency.";
     } else {
-      matchVerdictText.textContent = "Foundational Stage: Comprehensive learning plan recommended.";
+      matchVerdictText.textContent = "Foundational Stage: Comprehensive sequential learning roadmap recommended.";
     }
 
     // Counts
-    const have = report.skills_have || [];
-    const improve = report.skills_improve || [];
-    const missing = report.skills_missing || [];
+    const matched = report.matched_skills || [];
+    const improve = report.improvement_skills || [];
+    const missing = report.missing_skills || [];
 
-    countSkillsHave.textContent = have.length;
+    countSkillsHave.textContent = matched.length;
     countSkillsImprove.textContent = improve.length;
     countSkillsMissing.textContent = missing.length;
 
-    badgeHaveCount.textContent = have.length;
+    badgeHaveCount.textContent = matched.length;
     badgeImproveCount.textContent = improve.length;
     badgeMissingCount.textContent = missing.length;
 
@@ -288,120 +509,112 @@ document.addEventListener("DOMContentLoaded", () => {
       mentorAdviceCard.classList.add("d-none");
     }
 
-    // A. Skills You Have
-    if (have.length > 0) {
-      skillsHaveList.innerHTML = have.map(item => `
-        <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(52, 211, 153, 0.55);">
+    // A. Matched Skills (Green)
+    if (matched.length > 0) {
+      skillsHaveList.innerHTML = matched.map(item => `
+        <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.14); border: 1.5px solid rgba(52, 211, 153, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.skill}</span>
-            <span class="badge bg-success text-white small" style="font-size: 0.72rem;"><i class="bi bi-check-circle-fill me-1"></i> Verified</span>
+            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="badge bg-success text-white small" style="font-size: 0.72rem;">
+              <i class="bi bi-check-circle-fill me-1"></i> Meets Req (${item.current_level_name})
+            </span>
           </div>
-          <div class="text-white small" style="font-size: 0.82rem; opacity: 0.95;">${item.evidence}</div>
+          <div class="text-white small" style="font-size: 0.82rem; line-height: 1.4;">${item.evidence}</div>
         </div>
       `).join("");
     } else {
-      skillsHaveList.innerHTML = '<div style="color: #94a3b8;" class="small py-2">No matching skills identified for this role in resume.</div>';
+      skillsHaveList.innerHTML = '<div style="color: #94a3b8;" class="small py-2">No matching skills identified at required proficiency level.</div>';
     }
 
-    // B. Skills to Improve
+    // B. Skills to Improve (Amber)
     if (improve.length > 0) {
       skillsImproveList.innerHTML = improve.map(item => `
-        <div class="p-3 rounded-3" style="background: rgba(245, 158, 11, 0.15); border: 1.5px solid rgba(251, 191, 36, 0.55);">
+        <div class="p-3 rounded-3" style="background: rgba(245, 158, 11, 0.14); border: 1.5px solid rgba(251, 191, 36, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.skill}</span>
-            <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-warning text-dark'} small" style="font-size: 0.72rem;">${item.priority} Priority</span>
+            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-warning text-dark'} small" style="font-size: 0.72rem;">
+              ${item.priority} Priority &bull; Gap: +${item.gap}
+            </span>
           </div>
-          <div class="text-white mb-2" style="font-size: 0.85rem; line-height: 1.4;">${item.why_matters}</div>
-          <div class="small fw-semibold" style="color: #fef08a; font-size: 0.78rem;"><strong>Action:</strong> ${item.learning_direction}</div>
+          <div class="small mb-1 text-light">Current: <strong>${item.current_level_name}</strong> &rarr; Target: <strong>${item.required_level_name}</strong></div>
+          <div class="text-white mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
+          <div class="small fw-semibold" style="color: #fef08a; font-size: 0.78rem;"><strong>Action:</strong> ${item.action}</div>
         </div>
       `).join("");
     } else {
       skillsImproveList.innerHTML = '<div style="color: #94a3b8;" class="small py-2">No secondary improvement skills flagged.</div>';
     }
 
-    // C. Missing or Not Found in Profile
+    // C. Missing / Not Found in Profile (Rose)
     if (missing.length > 0) {
       skillsMissingList.innerHTML = missing.map(item => `
         <div class="p-3 rounded-3" style="background: rgba(239, 68, 68, 0.14); border: 1.5px solid rgba(248, 113, 113, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.skill}</span>
-            <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-secondary text-white'} small" style="font-size: 0.72rem;">${item.priority} Priority</span>
+            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-secondary text-white'} small" style="font-size: 0.72rem;">
+              ${item.priority} Priority &bull; Target: ${item.required_level_name}
+            </span>
           </div>
-          <div class="badge bg-dark border border-secondary text-white small mb-2" style="font-size: 0.72rem;">Not found in profile</div>
-          <div class="text-white mb-2" style="font-size: 0.85rem; line-height: 1.4;">${item.why_matters}</div>
-          <div class="small fw-semibold" style="color: #fecdd3; font-size: 0.78rem;"><strong>Roadmap:</strong> ${item.learning_direction}</div>
+          <div class="badge bg-dark border border-secondary text-white small mb-2" style="font-size: 0.72rem;">Unverified in profile</div>
+          <div class="text-white mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
+          <div class="small fw-semibold" style="color: #fecdd3; font-size: 0.78rem;"><strong>Roadmap:</strong> ${item.action}</div>
         </div>
       `).join("");
     } else {
-      skillsMissingList.innerHTML = '<div class="text-success small py-2"><i class="bi bi-check-all"></i> All required skills are documented!</div>';
+      skillsMissingList.innerHTML = '<div class="text-success small py-2"><i class="bi bi-check-all"></i> All required skills are documented in profile!</div>';
     }
 
-    // D. Priority Gaps Table
+    // Priority Gaps Table
     const priorityGaps = report.priority_gaps || [];
     if (priorityGaps.length > 0) {
       priorityGapsTableBody.innerHTML = priorityGaps.map(gap => {
-        let priorityBadge = '<span class="badge bg-danger text-white border border-danger">High</span>';
+        let priorityBadge = '<span class="badge bg-danger text-white">High</span>';
         if (gap.priority === "Medium") {
-          priorityBadge = '<span class="badge bg-warning text-dark border border-warning">Medium</span>';
+          priorityBadge = '<span class="badge bg-warning text-dark">Medium</span>';
         } else if (gap.priority === "Low") {
-          priorityBadge = '<span class="badge bg-info text-dark border border-info">Low</span>';
+          priorityBadge = '<span class="badge bg-info text-dark">Low</span>';
         }
 
         return `
           <tr>
             <td class="fw-bold text-white fs-6">${gap.skill}</td>
+            <td><span class="badge bg-dark border border-secondary text-white small">${gap.category}</span></td>
             <td>${priorityBadge}</td>
+            <td class="text-white small">${gap.current_level}</td>
+            <td class="text-primary fw-semibold small">${gap.required_level}</td>
             <td><span class="badge bg-dark border border-secondary text-white small">${gap.status}</span></td>
-            <td class="text-white small" style="font-size: 0.88rem;">${gap.why_matters}</td>
-            <td class="text-white small fw-medium" style="color: #cbd5e1 !important; font-size: 0.88rem;">${gap.action}</td>
+            <td class="text-white small" style="font-size: 0.85rem;">${gap.action}</td>
           </tr>
         `;
       }).join("");
     } else {
-      priorityGapsTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-3 text-white">No high-priority skill gaps identified.</td></tr>';
+      priorityGapsTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-white">No priority skill gaps identified.</td></tr>';
     }
 
-    // E. Phased Learning Roadmap
-    const roadmap = report.learning_path || [];
-    learningRoadmapContainer.innerHTML = roadmap.map(phase => `
-      <div class="col-md-4">
-        <div class="roadmap-phase-card h-100">
-          <div class="small fw-bold text-uppercase mb-1" style="color: #818cf8; letter-spacing: 0.05em;">${phase.phase}</div>
-          <h5 class="fw-bold text-white mb-2">${phase.goal}</h5>
-          <div class="d-flex flex-wrap gap-1 mb-2">
-            ${(phase.skills || []).map(s => `<span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 0.78rem;">${s}</span>`).join("")}
-          </div>
-          <p class="text-white small mb-0" style="font-size: 0.85rem; line-height: 1.5;">${phase.action}</p>
-        </div>
-      </div>
-    `).join("");
+    // Category Breakdown Radar/Cards
+    const categories = report.category_breakdown || {};
+    categoryBreakdownContainer.innerHTML = Object.entries(categories).map(([catName, stats]) => {
+      const catTotal = stats.total || 1;
+      const catMatched = stats.matched || 0;
+      const pct = Math.round((catMatched / catTotal) * 100);
 
-    // F. Recommended Portfolio Projects
-    const projects = report.recommended_projects || [];
-    recommendedProjectsContainer.innerHTML = projects.map(proj => `
-      <div class="col-md-6">
-        <div class="p-4 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(148, 163, 184, 0.25);">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="badge bg-primary bg-opacity-25 text-white border border-primary small fw-semibold">${proj.difficulty || 'Intermediate'}</span>
-            <span class="text-white small"><i class="bi bi-clock me-1 text-primary"></i> ${proj.estimated_hours || '20-30 hours'}</span>
-          </div>
-          <h5 class="fw-bold text-white mb-2">${proj.title}</h5>
-          <p class="text-white small mb-3" style="line-height: 1.6; font-size: 0.9rem;">${proj.description}</p>
-          
-          <div class="small fw-bold text-uppercase mb-1" style="color: #cbd5e1;">Key Technologies Applied:</div>
-          <div class="d-flex flex-wrap gap-1 mb-3">
-            ${(proj.skills_applied || []).map(t => `<span class="skill-badge py-1 px-2" style="font-size: 0.78rem;">${t}</span>`).join("")}
-          </div>
-
-          <div class="p-3 rounded bg-dark border border-secondary text-white small" style="font-size: 0.85rem;">
-            <i class="bi bi-trophy-fill text-warning me-1"></i> <strong>Showcase Outcome:</strong> ${proj.outcome}
+      return `
+        <div class="col-md-6 col-lg-3">
+          <div class="p-3 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);">
+            <div class="fw-semibold text-white small mb-1">${catName}</div>
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-5 fw-bold text-primary">${pct}%</span>
+              <span class="text-muted small">${catMatched} / ${catTotal} Met</span>
+            </div>
+            <div class="progress bg-dark" style="height: 6px; border-radius: 9999px;">
+              <div class="progress-bar bg-primary" style="width: ${pct}%"></div>
+            </div>
           </div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   // Initial Auth Check
   initAuth();
 });
-

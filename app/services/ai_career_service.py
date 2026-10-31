@@ -54,6 +54,19 @@ def _normalize_skill(skill: str) -> str:
     return aliases.get(s, s)
 
 
+def _skill_matches_profile(target_skill: str, normalized_skills: set, text_block: str) -> bool:
+    n_target = _normalize_skill(target_skill)
+    if n_target in normalized_skills:
+        return True
+    parts = [p.strip() for p in re.split(r"[/,&]", n_target) if len(p.strip()) >= 2]
+    for p in parts:
+        if p in normalized_skills or any(p in u or u in p for u in normalized_skills if len(u) >= 3):
+            return True
+        if re.search(r"\b" + re.escape(p) + r"\b", text_block):
+            return True
+    return any(n_target in u or u in n_target for u in normalized_skills if len(u) >= 3)
+
+
 def compute_career_match(
     role: Dict[str, Any],
     user_skills: List[str],
@@ -89,8 +102,7 @@ def compute_career_match(
     matched_required = []
     missing_required = []
     for req in role["required_skills"]:
-        n_req = _normalize_skill(req)
-        if n_req in normalized_user_skills or re.search(r"\b" + re.escape(n_req) + r"\b", project_text):
+        if _skill_matches_profile(req, normalized_user_skills, project_text):
             matched_required.append(req)
         else:
             missing_required.append(req)
@@ -99,8 +111,7 @@ def compute_career_match(
     matched_recommended = []
     missing_recommended = []
     for rec in role["recommended_skills"]:
-        n_rec = _normalize_skill(rec)
-        if n_rec in normalized_user_skills or re.search(r"\b" + re.escape(n_rec) + r"\b", project_text):
+        if _skill_matches_profile(rec, normalized_user_skills, project_text):
             matched_recommended.append(rec)
         else:
             missing_recommended.append(rec)
