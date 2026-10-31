@@ -1,0 +1,26 @@
+
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+
+# Supabase
+supabase
+
+# Environment configuration
+python-dotenv
+pydantic-settings
+
+# JWT authentication
+PyJWT[crypto]
+
+# Resume parsing
+PyMuPDF
+python-docx
+
+# AI integration
+openai
+
+# Data validation and HTTP
+pydantic
+httpx
