@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
           recommendationsList.innerHTML = `
             <div class="col-12 text-center py-5 glass-card">
               <i class="bi bi-file-earmark-arrow-up fs-1 text-primary d-block mb-3"></i>
-              <h4 class="fw-bold text-white">No Resume Uploaded Yet</h4>
+              <h4 class="fw-bold text-dark">No Resume Uploaded Yet</h4>
               <p class="text-muted mb-4">PATHFORGE needs your resume data to generate personalized career recommendations.</p>
               <a href="/resume-analysis" class="btn btn-primary-gradient rounded-pill px-4 py-2">
                 <i class="bi bi-upload me-1"></i> Go to Resume Analyzer
@@ -280,13 +280,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
-                  <span class="badge bg-dark border border-secondary text-light small">${rec.category}</span>
+                  <span class="badge bg-light border text-muted small">${rec.category}</span>
                   <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 small">
                     <i class="bi bi-graph-up me-1"></i> Demand: ${rec.market_demand || 'High'}
                   </span>
                   ${isSelected ? '<span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i> Selected Target</span>' : ''}
                 </div>
-                <h4 class="fw-bold text-white mb-1">#${index + 1} ${rec.career_title}</h4>
+                <h4 class="fw-bold text-dark mb-1">#${index + 1} ${rec.career_title}</h4>
               </div>
               <div class="text-center">
                 <div class="${scoreClass}">
@@ -297,19 +297,19 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <!-- Role Description -->
-            <p class="text-white small mb-3" style="line-height: 1.6; font-size: 0.92rem;">${rec.description}</p>
+            <p class="text-muted small mb-3" style="line-height: 1.6; font-size: 0.92rem;">${rec.description}</p>
 
             <!-- Why This Matches You (Explainability) -->
             <div class="p-3 mb-3 rounded-3" style="background: rgba(99, 102, 241, 0.12); border-left: 4px solid #818cf8; border-top: 1px solid rgba(129, 140, 248, 0.2); border-right: 1px solid rgba(129, 140, 248, 0.2); border-bottom: 1px solid rgba(129, 140, 248, 0.2);">
               <div class="fw-bold text-primary small mb-1" style="font-size: 0.82rem; letter-spacing: 0.04em;">
                 <i class="bi bi-lightbulb-fill me-1"></i> WHY THIS CAREER MATCHES YOUR PROFILE:
               </div>
-              <div class="text-white small" style="line-height: 1.55; font-size: 0.88rem;">${rec.why_matched}</div>
+              <div class="text-dark small" style="line-height: 1.55; font-size: 0.88rem;">${rec.why_matched}</div>
             </div>
 
             <!-- Relevant Existing Skills -->
             <div class="mb-3">
-              <div class="small fw-bold text-uppercase mb-2" style="color: #cbd5e1; letter-spacing: 0.05em;">
+              <div class="small fw-bold text-uppercase mb-2 text-muted" style="letter-spacing: 0.05em;">
                 <i class="bi bi-check-circle-fill text-success me-1"></i> Relevant Existing Skills You Have:
               </div>
               <div class="d-flex flex-wrap gap-1">
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <!-- Skills to Acquire / Missing -->
             <div class="mb-3">
-              <div class="small fw-bold text-uppercase mb-2" style="color: #cbd5e1; letter-spacing: 0.05em;">
+              <div class="small fw-bold text-uppercase mb-2 text-muted" style="letter-spacing: 0.05em;">
                 <i class="bi bi-exclamation-circle-fill text-danger me-1"></i> Missing / Unverified Skills:
               </div>
               <div class="d-flex flex-wrap gap-1">
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <!-- Actionable Next Steps -->
             <div class="mb-4">
-              <div class="small fw-bold text-uppercase mb-2" style="color: #cbd5e1; letter-spacing: 0.05em;">
+              <div class="small fw-bold text-uppercase mb-2 text-muted" style="letter-spacing: 0.05em;">
                 <i class="bi bi-signpost-split-fill text-info me-1"></i> Recommended Next Steps:
               </div>
               <ul class="list-unstyled mb-0">
@@ -413,13 +413,13 @@ document.addEventListener("DOMContentLoaded", () => {
             ${data.data.map(role => `
               <div class="col-md-6 col-lg-4">
                 <div class="p-3 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle);">
-                  <div class="badge bg-dark border border-secondary text-light small mb-2">${role.category}</div>
-                  <h5 class="fw-bold text-white mb-2">${role.title}</h5>
-                  <p class="text-light small mb-3" style="font-size: 0.8rem; line-height: 1.4;">${role.description}</p>
+                  <div class="badge bg-light border text-muted small mb-2">${role.category}</div>
+                  <h5 class="fw-bold text-dark mb-2">${role.title}</h5>
+                  <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.4;">${role.description}</p>
                   
                   <div class="small text-muted fw-semibold mb-1">Required Skills:</div>
                   <div class="d-flex flex-wrap gap-1 mb-3">
-                    ${role.required_skills.map(s => `<span class="badge bg-dark text-info border border-secondary px-2 py-1" style="font-size: 0.72rem;">${s}</span>`).join("")}
+                    ${role.required_skills.map(s => `<span class="badge bg-light text-primary border px-2 py-1" style="font-size: 0.72rem;">${s}</span>`).join("")}
                   </div>
 
                   <button class="btn btn-outline-custom btn-sm rounded-pill w-100 select-from-modal-btn"

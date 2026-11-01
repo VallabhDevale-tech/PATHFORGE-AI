@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const payload = JSON.parse(atob(storedToken.split(".")[1]));
       if (payload.exp && payload.exp * 1000 > Date.now()) {
-        window.location.replace("/resume-analysis");
+        window.location.replace("/dashboard");
         return;
       }
     } catch (e) {
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (session && session.access_token) {
         localStorage.setItem("pathforge_auth_token", session.access_token);
         // Already authenticated -> redirect to Resume Analysis
-        window.location.replace("/resume-analysis");
+        window.location.replace("/dashboard");
         return;
       }
     } catch (err) {
@@ -174,9 +174,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data && data.session) {
         localStorage.setItem("pathforge_auth_token", data.session.access_token);
-        showAlert("Signed in successfully! Redirecting to Resume Analyzer...", "success");
+        showAlert("Signed in successfully! Redirecting to Dashboard...", "success");
         setTimeout(() => {
-          window.location.replace("/resume-analysis");
+          window.location.replace("/dashboard");
         }, 500);
       } else {
         showAlert("Unexpected response from authentication provider.", "danger");
@@ -265,9 +265,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Check if session was granted immediately (email confirmation disabled or auto-confirm)
       if (data && data.session) {
         localStorage.setItem("pathforge_auth_token", data.session.access_token);
-        showAlert("Account created successfully! Redirecting to Resume Analyzer...", "success");
+        showAlert("Account created successfully! Redirecting to Dashboard...", "success");
         setTimeout(() => {
-          window.location.replace("/resume-analysis");
+          window.location.replace("/dashboard");
         }, 600);
       } else {
         // Confirmation email sent

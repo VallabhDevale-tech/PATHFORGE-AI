@@ -220,15 +220,15 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       } else {
         demonstratedList.innerHTML = demonstrated.map(item => `
-          <div class="p-3 rounded-2 bg-dark bg-opacity-50 border border-success border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="p-3 rounded-3 bg-white border border-success border-opacity-25 shadow-2xs d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="fw-bold text-white fs-6">${escapeHtml(item.skill)}</span>
+                <span class="fw-bold text-dark fs-6">${escapeHtml(item.skill)}</span>
                 <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 small">
                   ${escapeHtml(item.level || "Proficient")}
                 </span>
               </div>
-              <p class="text-white small mb-0 opacity-75">${escapeHtml(item.reason || "Validated through assessments and practical work.")}</p>
+              <p class="text-muted small mb-0">${escapeHtml(item.reason || "Validated through assessments and practical work.")}</p>
             </div>
             <button class="btn btn-outline-success btn-sm rounded-pill px-3 test-skill-btn" data-skill="${escapeHtml(item.skill)}">
               <i class="bi bi-arrow-repeat me-1"></i> Test Again
@@ -248,15 +248,15 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       } else {
         needsPracticeList.innerHTML = needsPractice.map(item => `
-          <div class="p-3 rounded-2 bg-dark bg-opacity-50 border border-warning border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="p-3 rounded-3 bg-white border border-warning border-opacity-25 shadow-2xs d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div style="max-width: 70%;">
               <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="fw-bold text-white fs-6">${escapeHtml(item.skill)}</span>
+                <span class="fw-bold text-dark fs-6">${escapeHtml(item.skill)}</span>
                 <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 small">
                   Priority Focus
                 </span>
               </div>
-              <p class="text-white small mb-1">${escapeHtml(item.reason || "Requires additional reinforcement.")}</p>
+              <p class="text-muted small mb-1">${escapeHtml(item.reason || "Requires additional reinforcement.")}</p>
               <p class="text-muted small mb-0" style="font-size: 0.75rem;">
                 <i class="bi bi-lightbulb text-warning me-1"></i> ${escapeHtml(item.recommendation || "Complete targeted exercises.")}
               </p>
@@ -434,15 +434,15 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <form id="quizForm" class="d-flex flex-column gap-4">
         ${questions.map((q, idx) => `
-          <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-50">
-            <h6 class="fw-bold text-white mb-3">
+          <div class="p-3 rounded-3 bg-light border border-slate-200">
+            <h6 class="fw-bold text-dark mb-3">
               <span class="badge bg-primary me-2">${idx + 1}</span> ${escapeHtml(q.question)}
             </h6>
             <div class="d-flex flex-column gap-2">
               ${q.options.map((opt, optIdx) => `
-                <label class="p-2 px-3 rounded-2 border border-secondary border-opacity-25 d-flex align-items-center gap-2 cursor-pointer hover-bg-subtle" style="background: rgba(15, 23, 42, 0.6); cursor: pointer;">
+                <label class="p-2 px-3 rounded-2 border border-secondary border-opacity-25 d-flex align-items-center gap-2 cursor-pointer hover-bg-subtle" style="background: #ffffff; cursor: pointer; border-color: #e2e8f0 !important;">
                   <input type="radio" name="question_${q.id}" value="${optIdx}" class="form-check-input mt-0 me-1">
-                  <span class="text-white small">${escapeHtml(opt)}</span>
+                  <span class="text-dark small">${escapeHtml(opt)}</span>
                 </label>
               `).join("")}
             </div>
@@ -529,8 +529,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="d-flex align-items-center gap-2">
             <i class="bi ${isPassed ? 'bi-check-circle-fill text-success fs-3' : 'bi-exclamation-triangle-fill text-warning fs-3'}"></i>
             <div>
-              <h5 class="fw-bold mb-0 text-white">${isPassed ? 'Proficiency Verified!' : 'Needs Reinforcement'}</h5>
-              <div class="small text-white opacity-75">${result.correct_count} of ${result.total_questions} questions correct</div>
+              <h5 class="fw-bold mb-0 text-dark">${isPassed ? 'Proficiency Verified!' : 'Needs Reinforcement'}</h5>
+              <div class="small text-muted">${result.correct_count} of ${result.total_questions} questions correct</div>
             </div>
           </div>
           <div class="fs-2 fw-bold ${isPassed ? 'text-success' : 'text-warning'}">${scorePct}%</div>
@@ -546,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = `
           <div class="d-flex align-items-start gap-2">
             <i class="bi ${fb.is_correct ? 'bi-check-circle text-success' : 'bi-x-circle text-danger'} mt-1"></i>
-            <div class="small text-white">
+            <div class="small text-dark">
               <span class="fw-bold">${fb.is_correct ? 'Correct!' : 'Incorrect.'}</span> ${escapeHtml(fb.explanation)}
             </div>
           </div>

@@ -63,8 +63,46 @@ app.include_router(project_router)
 app.include_router(adaptive_router)
 
 
-@app.get("/", response_class=HTMLResponse, summary="Authentication Page - Sign In & Register")
-async def home_auth_page(request: Request):
+@app.get("/", response_class=HTMLResponse, summary="Landing Page - Forge Your Future")
+async def landing_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="landing.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+        }
+    )
+
+
+@app.get("/login", response_class=HTMLResponse, summary="Sign In Page")
+async def login_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="auth.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "default_tab": "login"
+        }
+    )
+
+
+@app.get("/signup", response_class=HTMLResponse, summary="Sign Up / Register Page")
+async def signup_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="auth.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "default_tab": "signup"
+        }
+    )
+
+
+@app.get("/auth", response_class=HTMLResponse, summary="Authentication Portal")
+async def auth_page(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="auth.html",
@@ -75,14 +113,54 @@ async def home_auth_page(request: Request):
     )
 
 
-@app.get("/login", response_class=HTMLResponse, summary="Login Alias")
-async def login_alias(request: Request):
+@app.get("/dashboard", response_class=HTMLResponse, summary="SaaS Command Center Dashboard")
+async def dashboard_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="auth.html",
+        name="dashboard.html",
         context={
             "supabase_url": SUPABASE_URL,
             "supabase_key": SUPABASE_KEY,
+            "active_page": "dashboard"
+        }
+    )
+
+
+@app.get("/quizzes", response_class=HTMLResponse, summary="Interactive Topic Quizzes Engine")
+async def quizzes_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="quizzes.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "quizzes"
+        }
+    )
+
+
+@app.get("/profile", response_class=HTMLResponse, summary="User Career Profile")
+async def profile_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="profile.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "profile"
+        }
+    )
+
+
+@app.get("/settings", response_class=HTMLResponse, summary="User & Learning Settings")
+async def settings_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="settings.html",
+        context={
+            "supabase_url": SUPABASE_URL,
+            "supabase_key": SUPABASE_KEY,
+            "active_page": "settings"
         }
     )
 

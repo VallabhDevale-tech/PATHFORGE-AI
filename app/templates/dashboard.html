@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}PATHFORGE AI | Command Center Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+  <!-- Personalized Welcome Hero Card -->
+  <section class="glass-card p-4 p-lg-5 mb-5 border-primary border-opacity-25" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 245, 255, 0.95) 100%);">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div class="feature-badge mb-3">
+          <i class="bi bi-person-check-fill text-primary"></i> <span id="welcomeSubtext">AI Career Transition Companion</span>
+        </div>
+        <h1 class="display-6 fw-bold mb-2 text-dark">
+          Welcome back, <span class="brand-gradient" id="welcomeUserName">Engineer</span>! 👋
+        </h1>
+        <p class="text-muted lead mb-4" style="font-size: 1.05rem; max-width: 620px;">
+          Here is your live career intelligence overview. Track skill progress, execute weekly roadmap milestones, and verify competencies with diagnostic tests.
+        </p>
+
+        <!-- Active Career Track Indicator -->
+        <div class="d-inline-flex align-items-center gap-3 p-2 px-3 rounded-pill bg-white border shadow-xs" id="activeTrackPill">
+          <span class="avatar-circle" style="width: 28px; height: 28px; font-size: 0.75rem;"><i class="bi bi-compass"></i></span>
+          <span class="small text-muted">Target Track:</span>
+          <span class="small fw-bold text-primary" id="dashTargetCareerTitle">Full Stack Developer</span>
+          <a href="/career-recommender" class="text-decoration-none small text-muted hover-blue" title="Change target role">
+            <i class="bi bi-pencil-square ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <div class="d-flex flex-column gap-2 align-items-lg-end">
+          <a href="/resume-analysis" class="btn btn-primary-gradient px-4 py-3 rounded-pill fw-bold shadow-sm">
+            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Updated Resume
+          </a>
+          <a href="/quizzes" class="btn btn-outline-custom px-4 py-2 rounded-pill small">
+            <i class="bi bi-patch-question me-1"></i> Test Skills with Quiz
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Core Velocity & Progression Cards -->
+  <section class="row g-4 mb-5">
+    <!-- 1. Roadmap Completion -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="glass-card-elevated p-4 h-100 card-3d">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-semibold text-uppercase tracking-wider">Roadmap Progress</span>
+          <div class="feature-icon-badge mb-0" style="width: 40px; height: 40px; font-size: 1.15rem;">
+            <i class="bi bi-signpost-2"></i>
+          </div>
+        </div>
+        <div class="display-6 fw-bold text-primary mb-2" id="dashRoadmapPct">0%</div>
+        <div class="progress-3d mb-2">
+          <div class="progress-bar" id="dashRoadmapBar" style="width: 0%;"></div>
+        </div>
+        <div class="text-muted small d-flex justify-content-between" style="font-size: 0.78rem;">
+          <span id="dashActivitiesCompleted">0 of 0 Activities</span>
+          <span>Week-by-week</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Active Focus Tasks -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="glass-card-elevated p-4 h-100 card-3d">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-semibold text-uppercase tracking-wider">In-Progress Tasks</span>
+          <div class="feature-icon-badge mb-0 text-warning bg-warning-subtle" style="width: 40px; height: 40px; font-size: 1.15rem;">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+        </div>
+        <div class="display-6 fw-bold text-warning mb-2" id="dashInProgressCount">0</div>
+        <div class="text-muted small mt-2">Active weekly learning modules currently prioritized for practice.</div>
+      </div>
+    </div>
+
+    <!-- 3. Portfolio Projects -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="glass-card-elevated p-4 h-100 card-3d">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-semibold text-uppercase tracking-wider">Portfolio Projects</span>
+          <div class="feature-icon-badge mb-0 text-success bg-success-subtle" style="width: 40px; height: 40px; font-size: 1.15rem;">
+            <i class="bi bi-folder-check"></i>
+          </div>
+        </div>
+        <div class="display-6 fw-bold text-success mb-2" id="dashProjectsCount">0</div>
+        <div class="text-muted small mt-2">Production projects verified with live repository code and test suites.</div>
+      </div>
+    </div>
+
+    <!-- 4. Avg Assessment Score -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="glass-card-elevated p-4 h-100 card-3d">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-semibold text-uppercase tracking-wider">Avg Quiz Score</span>
+          <div class="feature-icon-badge mb-0 text-info bg-info-subtle" style="width: 40px; height: 40px; font-size: 1.15rem;">
+            <i class="bi bi-award"></i>
+          </div>
+        </div>
+        <div class="display-6 fw-bold text-info mb-2" id="dashQuizAvg">0%</div>
+        <div class="text-muted small mt-2" id="dashQuizCountLabel">0 topic assessments completed.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMENDED NEXT LEARNING STEP ("WHAT SHOULD I LEARN NEXT?") -->
+  <section class="glass-card p-4 p-md-5 mb-5 border-primary border-opacity-50" style="background: linear-gradient(135deg, rgba(235, 242, 255, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%);">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div class="badge bg-primary text-white px-3 py-1 rounded-pill mb-2">
+          <i class="bi bi-lightning-charge-fill me-1"></i> Recommended Next Step
+        </div>
+        <h3 class="fw-bold text-dark mb-2" id="dashNextActionTitle">
+          Evaluating your optimal next milestone...
+        </h3>
+        <p class="text-muted mb-3" id="dashNextActionWhy" style="font-size: 0.98rem; line-height: 1.6;">
+          Our continuous intelligence engine evaluates your verified gaps, active roadmap tasks, and past assessment scores to identify the single highest-leverage activity for today.
+        </p>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <span class="badge bg-white border text-dark px-3 py-2 rounded-pill shadow-xs" id="dashNextSkillBadge">
+            <i class="bi bi-tag-fill text-primary me-1"></i> Skill: General
+          </span>
+          <span class="text-muted small" id="dashNextTimeBadge">
+            <i class="bi bi-clock me-1 text-primary"></i> Est. ~45 mins
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <button id="dashStartNextActionBtn" class="btn btn-primary-gradient rounded-pill px-4 py-3 fw-bold fs-6">
+          <i class="bi bi-play-circle-fill me-2"></i> Start Recommended Activity
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK ACCESS SIX PILLARS GRID -->
+  <section class="mb-5">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">Your Career Transition Suite</h4>
+        <p class="text-muted small mb-0">Jump directly into any of the 6 specialized intelligence modules.</p>
+      </div>
+      <a href="/skill-gap-analyzer" class="text-decoration-none small text-primary fw-semibold">
+        View Full Gap Analysis <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      <!-- Feature 1 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/resume-analysis" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0">
+                <i class="bi bi-file-earmark-person"></i>
+              </div>
+              <span class="badge bg-primary-subtle text-primary small">Feature 1</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Resume Intelligence</h5>
+            <p class="text-muted small mb-3">
+              Extract verified skills, experience, and certifications with zero hallucinations.
+            </p>
+            <span class="text-primary fw-semibold small d-inline-flex align-items-center gap-1">
+              Upload / View Resumes <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/career-recommender" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0 text-info bg-info-subtle">
+                <i class="bi bi-compass"></i>
+              </div>
+              <span class="badge bg-info-subtle text-info small">Feature 2</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Career Discovery</h5>
+            <p class="text-muted small mb-3">
+              Discover your top 5 matched engineering tracks with transparent compatibility scores.
+            </p>
+            <span class="text-info fw-semibold small d-inline-flex align-items-center gap-1">
+              Explore Roles <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/skill-gap-analyzer" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0 text-warning bg-warning-subtle">
+                <i class="bi bi-bar-chart-steps"></i>
+              </div>
+              <span class="badge bg-warning-subtle text-warning small">Feature 3</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Skill Gap Analyzer</h5>
+            <p class="text-muted small mb-3">
+              Mathematical proficiency comparison (Gap = Required &minus; Current) with custom self-ratings.
+            </p>
+            <span class="text-warning fw-semibold small d-inline-flex align-items-center gap-1">
+              Run Gap Diagnostics <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/personalized-roadmap" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0 text-success bg-success-subtle">
+                <i class="bi bi-signpost-2"></i>
+              </div>
+              <span class="badge bg-success-subtle text-success small">Feature 4</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Career Roadmap</h5>
+            <p class="text-muted small mb-3">
+              Tailored week-by-week curriculum sequenced directly from your verified gaps.
+            </p>
+            <span class="text-success fw-semibold small d-inline-flex align-items-center gap-1">
+              Track Milestones <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/project-recommendations" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0 text-purple bg-purple-subtle" style="background: rgba(167, 139, 250, 0.15); color: #7C3AED;">
+                <i class="bi bi-code-square"></i>
+              </div>
+              <span class="badge bg-light border text-purple small" style="color: #7C3AED;">Feature 5</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Projects & Portfolio</h5>
+            <p class="text-muted small mb-3">
+              Build practical recruiter-ready project blueprints with GitHub tracking and live demos.
+            </p>
+            <span class="fw-semibold small d-inline-flex align-items-center gap-1" style="color: #7C3AED;">
+              View Blueprints <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="col-md-6 col-xl-4">
+        <a href="/quizzes" class="text-decoration-none">
+          <div class="glass-card-elevated p-4 h-100 card-3d">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="feature-icon-badge mb-0 text-danger bg-danger-subtle">
+                <i class="bi bi-patch-question"></i>
+              </div>
+              <span class="badge bg-danger-subtle text-danger small">Feature 6</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Quizzes & Assessments</h5>
+            <p class="text-muted small mb-3">
+              Verify proficiency across Python, SQL, FastAPI, Docker, and Git with instant evaluations.
+            </p>
+            <span class="text-danger fw-semibold small d-inline-flex align-items-center gap-1">
+              Launch Topic Quiz <i class="bi bi-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

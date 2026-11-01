@@ -224,13 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const resourcesHtml = (w.resources || []).map(r => `
-        <a href="${r.url}" target="_blank" class="badge bg-dark border border-secondary text-info text-decoration-none px-2 py-1">
+        <a href="${r.url}" target="_blank" class="badge bg-light border text-primary text-decoration-none px-2 py-1">
           <i class="bi bi-box-arrow-up-right me-1"></i> ${r.name} (${r.type})
         </a>
       `).join("");
 
       const exercisesHtml = (w.practical_exercises || []).map(ex => `
-        <li class="small text-white mb-1"><i class="bi bi-code-slash text-primary me-2"></i>${ex}</li>
+        <li class="small text-muted mb-1"><i class="bi bi-code-slash text-primary me-2"></i>${ex}</li>
       `).join("");
 
       return `
@@ -238,32 +238,32 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary border-opacity-50 pb-2 flex-wrap gap-2">
             <div>
               <span class="badge bg-primary me-2">Week ${w.week_number}</span>
-              <span class="badge bg-dark border border-secondary text-light small me-2">${w.stage}</span>
-              <span class="fw-bold text-white fs-5">${w.skill}</span>
+              <span class="badge bg-light border text-muted small me-2">${w.stage}</span>
+              <span class="fw-bold text-dark fs-5">${w.skill}</span>
             </div>
             <div class="d-flex align-items-center gap-2">
-              <span class="text-white small"><i class="bi bi-clock me-1 text-primary"></i> ${w.estimated_hours} hrs/week</span>
+              <span class="text-muted small"><i class="bi bi-clock me-1 text-primary"></i> ${w.estimated_hours} hrs/week</span>
               ${w.is_completed ? '<span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i> Completed</span>' : ''}
             </div>
           </div>
 
-          <p class="text-white small mb-3" style="line-height: 1.5;"><strong>Objective:</strong> ${w.learning_objective}</p>
+          <p class="text-muted small mb-3" style="line-height: 1.5;"><strong>Objective:</strong> ${w.learning_objective}</p>
 
           <!-- Resources -->
           <div class="mb-3">
-            <div class="small fw-bold text-uppercase mb-1" style="color: #cbd5e1; font-size: 0.78rem;">Verified Learning Resources:</div>
+            <div class="small fw-bold text-uppercase mb-1 text-muted" style="font-size: 0.78rem;">Verified Learning Resources:</div>
             <div class="d-flex flex-wrap gap-1">${resourcesHtml || '<span class="text-muted small">Official documentation</span>'}</div>
           </div>
 
           <!-- Exercises -->
           <div class="mb-3">
-            <div class="small fw-bold text-uppercase mb-1" style="color: #cbd5e1; font-size: 0.78rem;">Hands-on Milestone Deliverables:</div>
+            <div class="small fw-bold text-uppercase mb-1 text-muted" style="font-size: 0.78rem;">Hands-on Milestone Deliverables:</div>
             <ul class="list-unstyled mb-0">${exercisesHtml}</ul>
           </div>
 
           <!-- Activities Checklist -->
           <div class="mt-3 pt-3 border-top border-secondary border-opacity-50">
-            <div class="small fw-bold text-uppercase mb-2 text-light">Track Weekly Activities:</div>
+            <div class="small fw-bold text-uppercase mb-2 text-dark">Track Weekly Activities:</div>
             <div class="d-flex flex-column gap-2">
               ${filteredActs.map(act => {
                 const isDone = act.status === "completed";
@@ -276,12 +276,12 @@ document.addEventListener("DOMContentLoaded", () => {
                       <input type="checkbox" class="form-check-input activity-check" style="transform: scale(1.3); cursor: pointer;"
                         data-id="${act.id}" ${isDone ? 'checked' : ''}>
                       <div>
-                        <div class="fw-semibold text-white small">${act.title}</div>
+                        <div class="fw-semibold text-dark small">${act.title}</div>
                         <div class="text-muted" style="font-size: 0.75rem;">${act.type} &bull; ~${act.estimated_hours} hours</div>
                       </div>
                     </div>
                     <div>
-                      <select class="form-select form-select-sm bg-dark text-white border-secondary activity-status-select" data-id="${act.id}" style="width: 140px; font-size: 0.78rem;">
+                      <select class="form-select form-select-sm activity-status-select" data-id="${act.id}" style="width: 140px; font-size: 0.78rem;">
                         <option value="pending" ${act.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="in_progress" ${act.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
                         <option value="completed" ${act.status === 'completed' ? 'selected' : ''}>Completed</option>

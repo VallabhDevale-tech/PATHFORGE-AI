@@ -1,441 +1,314 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PATHFORGE AI | Resume Analysis Engine</title>
-  
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{% extends "base.html" %}
 
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Modern Minimal SaaS CSS -->
-  <link rel="stylesheet" href="/static/css/resume_analysis.css">
-</head>
-<body>
+{% block title %}PATHFORGE AI | Resume Analysis Engine{% endblock %}
+{% block breadcrumb %}Resume Analyzer{% endblock %}
 
-  <!-- Top Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-        <div class="brand-badge">PF</div>
-        <span class="brand-gradient fs-4">PATHFORGE<span>.AI</span></span>
-      </a>
+{% block content %}
+<div class="container-fluid px-0">
 
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- App Navigation Links -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto ms-4 mb-2 mb-lg-0 gap-1">
-          <li class="nav-item">
-            <a class="nav-link active" href="/resume-analysis">
-              <i class="bi bi-file-earmark-person me-1"></i> Resume Analyzer
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/career-recommender">
-              <i class="bi bi-compass me-1"></i> Career Recommender
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/skill-gap-analyzer">
-              <i class="bi bi-bar-chart-steps me-1"></i> Skill Gap Analyzer
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/personalized-roadmap">
-              <i class="bi bi-signpost-2 me-1"></i> Learning Roadmap
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/project-recommendations">
-              <i class="bi bi-code-square me-1"></i> Projects & Portfolio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/adaptive-learning">
-              <i class="bi bi-lightning-charge me-1"></i> Adaptive Learning
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="d-flex align-items-center gap-3">
-        <!-- Auth Status Container -->
-        <div id="authStatusContainer" class="d-flex align-items-center gap-2">
-          <span id="userEmailBadge" class="badge rounded-pill bg-dark border border-secondary text-light px-3 py-2">
-            <i class="bi bi-person-circle me-1 text-primary"></i> <span id="userEmailText">Authenticated User</span>
-          </span>
-          <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2" title="Sign out of PATHFORGE AI">
-            <i class="bi bi-box-arrow-right me-1"></i> Logout
-          </button>
-        </div>
-      </div>
+  <!-- Hero Header -->
+  <header class="text-center mb-5">
+    <div class="feature-badge mb-3">
+      <i class="bi bi-stars text-primary me-1"></i> Feature 1: Intelligent Resume Analysis
     </div>
-  </nav>
+    <h1 class="display-5 fw-bold mb-3 text-dark">
+      Transform Your Resume Into <span class="brand-gradient">Actionable Intelligence</span>
+    </h1>
+    <p class="text-muted lead mx-auto" style="max-width: 680px;">
+      Upload your PDF or DOCX resume. Our AI extraction engine analyzes verified facts, skills, experience, and coursework without fabrication.
+    </p>
+  </header>
 
-  <!-- Main Content Container -->
-  <main class="container py-5">
-    
-    <!-- Hero Header -->
-    <header class="text-center mb-5">
-      <div class="feature-badge mb-3">
-        <i class="bi bi-stars me-1"></i> Feature 1: Intelligent Resume Analysis
-      </div>
-      <h1 class="display-5 fw-bold mb-3">Transform Your Resume Into <span class="brand-gradient">Actionable Intelligence</span></h1>
-      <p class="text-muted lead mx-auto" style="max-width: 680px;">
-        Upload your PDF or DOCX resume. Our AI extraction engine analyzes verified facts, skills, experience, and certifications without fabrication.
-      </p>
-    </header>
-
-    <!-- Global Alert Box -->
-    <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
-      <div class="d-flex align-items-center gap-2">
-        <i id="alertIcon" class="bi fs-4"></i>
-        <div id="alertMessage" class="fw-medium"></div>
-      </div>
+  <!-- Global Alert Box -->
+  <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
+    <div class="d-flex align-items-center gap-2">
+      <i id="alertIcon" class="bi fs-4"></i>
+      <div id="alertMessage" class="fw-medium"></div>
     </div>
+  </div>
 
-    <!-- SECTION A: Upload Section -->
-    <section class="glass-card p-4 p-md-5 mb-5" id="uploadSection">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          
-          <div class="upload-dropzone" id="dropZone">
-            <input type="file" id="resumeFileInput" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="d-none">
-            
-            <div class="upload-icon-wrapper">
-              <i class="bi bi-cloud-arrow-up-fill fs-1"></i>
-            </div>
-            
-            <h4 class="fw-semibold mb-2">Drag & Drop your resume here</h4>
-            <p class="text-muted mb-3">or click to browse your local files</p>
-            
-            <div class="d-flex justify-content-center gap-2 flex-wrap mb-3">
-              <span class="badge bg-light border text-secondary px-3 py-2">
-                <i class="bi bi-file-earmark-pdf text-danger me-1"></i> PDF
-              </span>
-              <span class="badge bg-light border text-secondary px-3 py-2">
-                <i class="bi bi-file-earmark-word text-primary me-1"></i> DOCX
-              </span>
-              <span class="badge bg-light border text-secondary px-3 py-2">
-                <i class="bi bi-hdd-network text-warning me-1"></i> Max 5 MB
-              </span>
-            </div>
-            
-            <button type="button" class="btn btn-primary-gradient px-4 py-2 rounded-pill mt-2" onclick="document.getElementById('resumeFileInput').click();">
-              <i class="bi bi-folder2-open me-2"></i> Browse Resume Files
-            </button>
-          </div>
-
-          <!-- Selected File Preview Bar -->
-          <div id="filePreviewCard" class="mt-4 p-3 glass-card d-none">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-              <div class="d-flex align-items-center gap-3">
-                <div class="card-title-icon m-0">
-                  <i id="fileTypeIcon" class="bi bi-file-earmark-text fs-4 text-primary"></i>
-                </div>
-                <div>
-                  <div id="selectedFileName" class="fw-semibold text-white">resume.pdf</div>
-                  <div id="selectedFileSize" class="text-muted small">0 KB</div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-2">
-                <button type="button" id="clearFileBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
-                  <i class="bi bi-x-circle me-1"></i> Remove
-                </button>
-                <button type="button" id="startUploadBtn" class="btn btn-primary-gradient btn-sm rounded-pill px-4 py-2">
-                  <i class="bi bi-cpu me-1"></i> Analyze Resume
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION B: Processing Section (Stepper) -->
-    <section class="glass-card p-4 p-md-5 mb-5 d-none" id="processingSection">
-      <div class="text-center mb-4">
-        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <h4 class="fw-bold" id="processingStatusTitle">Analyzing Candidate Resume...</h4>
-        <p class="text-muted" id="processingStatusSubtitle">Please wait while our pipeline securely parses your document.</p>
-      </div>
-
-      <!-- 4 Stages Stepper -->
-      <div class="stepper-container">
-        <div class="step-item" id="step1">
-          <div class="step-circle" id="step1Circle">1</div>
-          <div>
-            <div class="fw-semibold small">1. Uploading</div>
-            <div class="text-muted" style="font-size: 0.75rem;">To private storage</div>
-          </div>
-        </div>
-
-        <div class="step-item" id="step2">
-          <div class="step-circle" id="step2Circle">2</div>
-          <div>
-            <div class="fw-semibold small">2. Extracting</div>
-            <div class="text-muted" style="font-size: 0.75rem;">PyMuPDF / python-docx</div>
-          </div>
-        </div>
-
-        <div class="step-item" id="step3">
-          <div class="step-circle" id="step3Circle">3</div>
-          <div>
-            <div class="fw-semibold small">3. Analyzing</div>
-            <div class="text-muted" style="font-size: 0.75rem;">AI structured engine</div>
-          </div>
-        </div>
-
-        <div class="step-item" id="step4">
-          <div class="step-circle" id="step4Circle">4</div>
-          <div>
-            <div class="fw-semibold small">4. Saving</div>
-            <div class="text-muted" style="font-size: 0.75rem;">Supabase persistence</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Progress bar -->
-      <div class="progress mt-4 bg-dark" style="height: 8px; border-radius: 9999px;">
-        <div id="processingProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 15%; background: var(--primary-gradient);"></div>
-      </div>
-    </section>
-
-    <!-- SECTION C: Results Dashboard -->
-    <section class="d-none" id="resultsSection">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-        <div>
-          <div class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-3 py-1 rounded-pill mb-2">
-            <i class="bi bi-check-circle-fill me-1"></i> Analysis Complete
-          </div>
-          <h2 class="fw-bold text-white mb-0" id="resultCandidateName">Candidate Analysis Report</h2>
-        </div>
-        <div class="d-flex gap-2">
-          <a href="/career-recommender" class="btn btn-primary-gradient rounded-pill px-4">
-            <i class="bi bi-compass me-1"></i> Explore Career Paths <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-          <button class="btn btn-outline-custom rounded-pill px-3" onclick="window.print();">
-            <i class="bi bi-printer me-1"></i> Print / Export
-          </button>
-          <button class="btn btn-outline-custom rounded-pill px-3" onclick="document.getElementById('uploadSection').scrollIntoView({behavior: 'smooth'});">
-            <i class="bi bi-plus-circle me-1"></i> Analyze Another
-          </button>
-        </div>
-      </div>
-
-      <div class="row g-4">
+  <!-- SECTION A: Upload Section -->
+  <section class="glass-card p-4 p-md-5 mb-5" id="uploadSection">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
         
-        <!-- 1. Personal Information Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-person-vcard fs-5"></i></span>
-                A. Personal Information
-              </span>
-              <span class="badge bg-dark text-muted border border-secondary small">Verified Facts</span>
-            </div>
-            <div class="p-4" id="personalInfoContainer">
-              <!-- Dynamically populated -->
-            </div>
+        <div class="p-5 text-center rounded-4 border-2 border-dashed bg-white shadow-sm" id="dropZone" style="border: 2px dashed rgba(71, 118, 255, 0.35); cursor: pointer; transition: all 0.25s ease;">
+          <input type="file" id="resumeFileInput" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="d-none">
+          
+          <div class="avatar-circle mx-auto mb-3" style="width: 72px; height: 72px; font-size: 2rem;">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
           </div>
+          
+          <h4 class="fw-bold text-dark mb-2">Drag &amp; Drop your resume file here</h4>
+          <p class="text-muted mb-4">or click anywhere in this area to browse your local device</p>
+          
+          <div class="d-flex justify-content-center gap-2 flex-wrap mb-4">
+            <span class="badge bg-light border text-secondary px-3 py-2 rounded-pill">
+              <i class="bi bi-file-earmark-pdf text-danger me-1"></i> PDF Document
+            </span>
+            <span class="badge bg-light border text-secondary px-3 py-2 rounded-pill">
+              <i class="bi bi-file-earmark-word text-primary me-1"></i> DOCX Document
+            </span>
+            <span class="badge bg-light border text-secondary px-3 py-2 rounded-pill">
+              <i class="bi bi-hdd-network text-warning me-1"></i> Max 5 MB
+            </span>
+          </div>
+          
+          <button type="button" class="btn btn-primary-gradient px-4 py-3 rounded-pill fw-semibold shadow-sm" onclick="document.getElementById('resumeFileInput').click();">
+            <i class="bi bi-folder2-open me-2"></i> Browse Resume Files
+          </button>
         </div>
 
-        <!-- 2. Professional Summary Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-card-text fs-5"></i></span>
-                B. Professional Summary & Strengths
-              </span>
-            </div>
-            <div class="p-4" id="professionalSummaryContainer">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Technical Skills Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-code-slash fs-5"></i></span>
-                C. Technical Skills
-              </span>
-              <span id="techSkillsCount" class="badge rounded-pill bg-primary px-3 py-1">0 Skills</span>
-            </div>
-            <div class="p-4">
-              <div id="technicalSkillsList" class="d-flex flex-wrap">
-                <!-- Dynamically populated -->
+        <!-- Selected File Preview Bar -->
+        <div id="filePreviewCard" class="mt-4 p-3 glass-card d-none">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+              <div class="avatar-circle" style="width: 44px; height: 44px;">
+                <i id="fileTypeIcon" class="bi bi-file-earmark-text fs-4 text-white"></i>
+              </div>
+              <div>
+                <div id="selectedFileName" class="fw-bold text-dark">resume.pdf</div>
+                <div id="selectedFileSize" class="text-muted small">0 KB</div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- 4. Soft Skills Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">
-                  <i class="bi bi-people fs-5"></i>
-                </span>
-                D. Soft Skills & Professional Attributes
-              </span>
-              <span id="softSkillsCount" class="badge rounded-pill bg-purple px-3 py-1" style="background: #8b5cf6;">0 Skills</span>
-            </div>
-            <div class="p-4">
-              <div id="softSkillsList" class="d-flex flex-wrap">
-                <!-- Dynamically populated -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. Work Experience Card -->
-        <div class="col-12">
-          <div class="glass-card">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-briefcase fs-5"></i></span>
-                F. Work Experience
-              </span>
-            </div>
-            <div class="p-4" id="workExperienceContainer">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 6. Education Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-mortarboard fs-5"></i></span>
-                E. Education
-              </span>
-            </div>
-            <div class="p-4" id="educationContainer">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 7. Projects Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-kanban fs-5"></i></span>
-                G. Projects
-              </span>
-            </div>
-            <div class="p-4" id="projectsContainer">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 8. Certifications Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-patch-check fs-5"></i></span>
-                H. Certifications
-              </span>
-            </div>
-            <div class="p-4" id="certificationsContainer">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 9. Additional Information Card -->
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="card-header-custom">
-              <span class="d-flex align-items-center">
-                <span class="card-title-icon"><i class="bi bi-award fs-5"></i></span>
-                I. Additional Information & Achievements
-              </span>
-            </div>
-            <div class="p-4" id="additionalInfoContainer">
-              <!-- Dynamically populated -->
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" id="clearFileBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+                <i class="bi bi-x-circle me-1"></i> Remove
+              </button>
+              <button type="button" id="startUploadBtn" class="btn btn-primary-gradient btn-sm rounded-pill px-4 py-2">
+                <i class="bi bi-cpu me-1"></i> Analyze Resume
+              </button>
             </div>
           </div>
         </div>
 
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- SECTION D: Resume History Section -->
-    <section class="glass-card p-4 p-md-5 mt-5" id="historySection">
-      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-        <div>
-          <h3 class="fw-bold mb-1"><i class="bi bi-clock-history me-2 text-primary"></i> Resume Upload History</h3>
-          <p class="text-muted small mb-0">Previously analyzed resumes under your authenticated account.</p>
+  <!-- SECTION B: Processing Section (Stepper) -->
+  <section class="glass-card p-4 p-md-5 mb-5 d-none" id="processingSection">
+    <div class="text-center mb-4">
+      <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <h4 class="fw-bold text-dark" id="processingStatusTitle">Analyzing Candidate Resume...</h4>
+      <p class="text-muted" id="processingStatusSubtitle">Please wait while our pipeline securely parses your document.</p>
+    </div>
+
+    <!-- 4 Stages Stepper -->
+    <div class="row g-3 text-center my-4">
+      <div class="col-sm-3">
+        <div class="p-3 rounded-3 bg-light border" id="step1">
+          <div class="badge bg-primary text-white mb-2" id="step1Circle">1</div>
+          <div class="fw-bold text-dark small">1. Uploading</div>
+          <div class="text-muted" style="font-size: 0.72rem;">To private storage</div>
         </div>
-        <button id="refreshHistoryBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
-          <i class="bi bi-arrow-clockwise me-1"></i> Refresh History
+      </div>
+      <div class="col-sm-3">
+        <div class="p-3 rounded-3 bg-light border" id="step2">
+          <div class="badge bg-secondary text-white mb-2" id="step2Circle">2</div>
+          <div class="fw-bold text-dark small">2. Extracting</div>
+          <div class="text-muted" style="font-size: 0.72rem;">PyMuPDF parser</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="p-3 rounded-3 bg-light border" id="step3">
+          <div class="badge bg-secondary text-white mb-2" id="step3Circle">3</div>
+          <div class="fw-bold text-dark small">3. Analyzing</div>
+          <div class="text-muted" style="font-size: 0.72rem;">AI structured engine</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="p-3 rounded-3 bg-light border" id="step4">
+          <div class="badge bg-secondary text-white mb-2" id="step4Circle">4</div>
+          <div class="fw-bold text-dark small">4. Saving</div>
+          <div class="text-muted" style="font-size: 0.72rem;">Supabase RLS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-3d mt-4">
+      <div id="processingProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 15%;"></div>
+    </div>
+  </section>
+
+  <!-- SECTION C: Results Dashboard -->
+  <section class="d-none" id="resultsSection">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+      <div>
+        <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill mb-2">
+          <i class="bi bi-check-circle-fill me-1"></i> Analysis Complete
+        </div>
+        <h2 class="fw-bold text-dark mb-0" id="resultCandidateName">Candidate Analysis Report</h2>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="/career-recommender" class="btn btn-primary-gradient rounded-pill px-4 py-2">
+          <i class="bi bi-compass me-1"></i> Explore Career Paths <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+        <button class="btn btn-outline-custom rounded-pill px-3 py-2" onclick="window.print();">
+          <i class="bi bi-printer me-1"></i> Print / Export
+        </button>
+        <button class="btn btn-outline-custom rounded-pill px-3 py-2" onclick="document.getElementById('uploadSection').scrollIntoView({behavior: 'smooth'});">
+          <i class="bi bi-plus-circle me-1"></i> Upload Another
         </button>
       </div>
+    </div>
 
-      <div class="table-responsive">
-        <table class="table table-dark-custom align-middle mb-0">
-          <thead>
-            <tr>
-              <th>File Name</th>
-              <th>Status</th>
-              <th>Uploaded Date</th>
-              <th class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="resumeHistoryTableBody">
-            <tr>
-              <td colspan="4" class="text-center py-4 text-muted">
-                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                Please sign in to view your uploaded resumes.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="row g-4">
+      
+      <!-- 1. Personal Information Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-person-vcard text-primary me-2"></i> Personal Information</h5>
+            <span class="badge bg-light border text-muted">Verified</span>
+          </div>
+          <div id="personalInfoContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
       </div>
-    </section>
 
-  </main>
+      <!-- 2. Professional Summary Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-card-text text-primary me-2"></i> Professional Summary &amp; Strengths</h5>
+          </div>
+          <div id="professionalSummaryContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
 
-  <!-- Server Configuration variables injected via Jinja2 -->
-  <script>
-    window.PATHFORGE_CONFIG = {
-      supabaseUrl: "{{ supabase_url }}",
-      supabaseKey: "{{ supabase_key }}"
-    };
-  </script>
+      <!-- 3. Technical Skills Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-code-slash text-primary me-2"></i> Technical Skills</h5>
+            <span id="techSkillsCount" class="badge rounded-pill bg-primary px-3 py-1">0 Skills</span>
+          </div>
+          <div id="technicalSkillsList" class="d-flex flex-wrap gap-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
 
-  <!-- Supabase JS Client for client-side Auth -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Bootstrap 5 Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Custom Feature JS -->
-  <script src="/static/js/resume_analysis.js"></script>
-</body>
-</html>
+      <!-- 4. Soft Skills Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-people text-purple me-2" style="color: #8B5CF6;"></i> Soft Skills &amp; Attributes</h5>
+            <span id="softSkillsCount" class="badge rounded-pill text-white px-3 py-1" style="background: #8B5CF6;">0 Skills</span>
+          </div>
+          <div id="softSkillsList" class="d-flex flex-wrap gap-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Work Experience Card -->
+      <div class="col-12">
+        <div class="glass-card-elevated p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-briefcase text-primary me-2"></i> Work Experience</h5>
+          </div>
+          <div id="workExperienceContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Education Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-mortarboard text-primary me-2"></i> Education</h5>
+          </div>
+          <div id="educationContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Projects Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-kanban text-primary me-2"></i> Projects</h5>
+          </div>
+          <div id="projectsContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Certifications Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-patch-check text-success me-2"></i> Certifications</h5>
+          </div>
+          <div id="certificationsContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Additional Information Card -->
+      <div class="col-lg-6">
+        <div class="glass-card-elevated h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-award text-warning me-2"></i> Additional Information &amp; Honors</h5>
+          </div>
+          <div id="additionalInfoContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION D: Resume History Section -->
+  <section class="glass-card p-4 p-md-5 mt-5" id="historySection">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold text-dark mb-1"><i class="bi bi-clock-history me-2 text-primary"></i> Resume Upload History</h4>
+        <p class="text-muted small mb-0">Previously analyzed resumes under your authenticated account.</p>
+      </div>
+      <button id="refreshHistoryBtn" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+        <i class="bi bi-arrow-clockwise me-1"></i> Refresh History
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>File Name</th>
+            <th>Status</th>
+            <th>Uploaded Date</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="resumeHistoryTableBody">
+          <tr>
+            <td colspan="4" class="text-center py-4 text-muted">
+              <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+              Please sign in to view your uploaded resumes.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/resume_analysis.js"></script>
+{% endblock %}

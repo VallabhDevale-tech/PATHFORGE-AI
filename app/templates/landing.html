@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PATHFORGE AI | Forge Your Future. One Skill at a Time.</title>
+
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- 3D Design Tokens & Styles -->
+  <link rel="stylesheet" href="/static/css/theme-3d.css">
+
+  <style>
+    /* Landing Page Specific Enhancements */
+    .landing-nav {
+      background: rgba(248, 250, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .hero-container {
+      position: relative;
+      padding: 5rem 0 6rem 0;
+      overflow: hidden;
+    }
+
+    .canvas-hero-3d {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Floating 3D Cards in Hero */
+    .hero-mockup-frame {
+      position: relative;
+      perspective: 1200px;
+    }
+
+    .hero-center-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-floating);
+      padding: 2rem;
+      transform: rotateY(-6deg) rotateX(4deg);
+      transition: transform 0.4s ease;
+    }
+
+    .hero-center-card:hover {
+      transform: rotateY(0deg) rotateX(0deg);
+    }
+
+    .floating-chip {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 0.6rem 1.25rem;
+      box-shadow: 0 12px 28px rgba(71, 118, 255, 0.16);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 3;
+      animation: floatChip 5s ease-in-out infinite alternate;
+    }
+
+    .chip-1 { top: -20px; left: -10px; animation-delay: 0s; color: var(--primary-blue); }
+    .chip-2 { bottom: 30px; left: -25px; animation-delay: 1.8s; color: var(--success); }
+    .chip-3 { top: 25%; right: -25px; animation-delay: 3s; color: #8B5CF6; }
+
+    @keyframes floatChip {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-14px) scale(1.03); }
+    }
+
+    /* Timeline Journey Nodes */
+    .journey-step-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-smooth);
+      height: 100%;
+    }
+
+    .journey-step-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(71, 118, 255, 0.4);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-box-3d {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-smooth);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .feature-box-3d:hover {
+      transform: translateY(-8px) rotateX(1deg);
+      border-color: rgba(71, 118, 255, 0.45);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .feature-icon-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--primary-blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-xs);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Background Ambient Orbs -->
+  <div class="orb-float orb-blue" style="top: -100px; left: -100px;"></div>
+  <div class="orb-float orb-purple" style="top: 250px; right: -80px;"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg landing-nav sticky-top py-3">
+    <div class="container px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <div class="brand-badge">PF</div>
+        <span class="brand-gradient fs-4">PATHFORGE<span style="color: var(--primary-blue);">.AI</span></span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#landingNavMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="landingNavMenu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-muted hover-blue" href="#how-it-works">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-muted hover-blue" href="#features">Six Pillars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-muted hover-blue" href="#journey">Transformation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-muted hover-blue" href="#interactive-preview">Live Preview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-muted hover-blue" href="#benefits">Why Us</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <a href="/login" class="btn btn-outline-custom rounded-pill px-4 py-2">Sign In</a>
+          <a href="/login?mode=signup" class="btn btn-primary-gradient rounded-pill px-4 py-2">
+            Start Free <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =====================================================================
+       HERO SECTION
+       ===================================================================== -->
+  <header class="hero-container">
+    <div class="container px-4">
+      <div class="row align-items-center g-5 hero-content">
+        
+        <!-- Hero Text & Headline -->
+        <div class="col-lg-6">
+          <div class="feature-badge mb-3">
+            <i class="bi bi-stars"></i> Next-Gen 3D Career Intelligence Platform
+          </div>
+
+          <h1 class="display-4 fw-bold mb-3" style="line-height: 1.15; color: var(--deep-navy);">
+            Forge Your Future. <br>
+            <span class="brand-gradient">One Skill at a Time.</span>
+          </h1>
+
+          <p class="lead text-muted mb-4" style="font-size: 1.15rem; line-height: 1.6; max-width: 540px;">
+            Your AI-powered career transformation companion. Discover your potential, close skill gaps, and build a personalized roadmap toward your dream career.
+          </p>
+
+          <div class="d-flex align-items-center gap-3 flex-wrap mb-5">
+            <a href="/login?mode=signup" class="btn btn-primary-gradient px-4 py-3 rounded-pill fs-6 fw-bold">
+              Start Your Journey <i class="bi bi-rocket-takeoff-fill ms-2"></i>
+            </a>
+            <a href="#features" class="btn btn-outline-custom px-4 py-3 rounded-pill fs-6 fw-semibold">
+              <i class="bi bi-grid-3x3-gap-fill me-1"></i> Explore Features
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="d-flex align-items-center gap-4 text-muted small flex-wrap">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-shield-check text-success fs-5"></i>
+              <span>Zero Hallucination</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-cpu-fill text-primary fs-5"></i>
+              <span>13 Industry Tracks</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-bar-chart-fill text-info fs-5"></i>
+              <span>Deterministic Gaps</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero 3D Interactive Visualization Mockup -->
+        <div class="col-lg-6 hero-mockup-frame">
+          <!-- Floating Badges -->
+          <div class="floating-chip chip-1">
+            <i class="bi bi-patch-check-fill"></i> Full Stack Developer: 88% Match
+          </div>
+          <div class="floating-chip chip-2">
+            <i class="bi bi-check2-circle"></i> Python Proficiency Level 3
+          </div>
+          <div class="floating-chip chip-3">
+            <i class="bi bi-lightning-charge-fill"></i> Adaptive Quiz Ready
+          </div>
+
+          <!-- Main Elevated Glass Card -->
+          <div class="hero-center-card">
+            <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle">AI</div>
+                <div>
+                  <h6 class="fw-bold mb-0 text-dark">Jordan's Career Radar</h6>
+                  <span class="text-muted small">Target: Cloud & Backend Engineer</span>
+                </div>
+              </div>
+              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">
+                High Trajectory
+              </span>
+            </div>
+
+            <!-- Progress Snapshot -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between small mb-1 fw-semibold">
+                <span class="text-dark">Roadmap Milestone Pacing</span>
+                <span class="text-primary fw-bold">Week 3 of 8 (75%)</span>
+              </div>
+              <div class="progress-3d">
+                <div class="progress-bar" style="width: 75%;"></div>
+              </div>
+            </div>
+
+            <!-- Skills Gap Overview -->
+            <div class="row g-2 mb-3">
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-light text-center border">
+                  <div class="fw-bold fs-5 text-success">8</div>
+                  <div class="text-muted" style="font-size: 0.72rem;">Verified Skills</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-light text-center border">
+                  <div class="fw-bold fs-5 text-warning">3</div>
+                  <div class="text-muted" style="font-size: 0.72rem;">Skills to Level Up</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-light text-center border">
+                  <div class="fw-bold fs-5 text-danger">2</div>
+                  <div class="text-muted" style="font-size: 0.72rem;">Missing Skills</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini Recommended Project -->
+            <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+              <div>
+                <div class="badge bg-primary-subtle text-primary mb-1">Portfolio Project</div>
+                <div class="fw-bold small text-dark">Microservice Order Processing API</div>
+              </div>
+              <a href="/login" class="btn btn-primary-gradient btn-sm rounded-pill px-3 py-1">View Blueprint</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       1. HOW PATHFORGE AI WORKS
+       ===================================================================== -->
+  <section class="py-5 bg-white border-top border-bottom" id="how-it-works">
+    <div class="container px-4 py-4">
+      <div class="text-center mb-5">
+        <div class="feature-badge mb-2">Step-by-Step Architecture</div>
+        <h2 class="display-6 fw-bold">How PATHFORGE AI Works</h2>
+        <p class="text-muted mx-auto" style="max-width: 620px;">
+          A transparent 3-step engine engineered to remove guesswork from engineering career transitions.
+        </p>
+      </div>
+
+      <div class="row g-4 text-center">
+        <div class="col-md-4">
+          <div class="journey-step-card">
+            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold fs-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 64px; height: 64px;">1</div>
+            <h5 class="fw-bold text-dark mb-2">Upload Verified Resume</h5>
+            <p class="text-muted small mb-0">Our engine parses your actual achievements, verified technical skills, and coursework directly from PDF/DOCX without fabricating claims.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="journey-step-card">
+            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold fs-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 64px; height: 64px;">2</div>
+            <h5 class="fw-bold text-dark mb-2">Diagnose Priority Gaps</h5>
+            <p class="text-muted small mb-0">Benchmark against 13 industry role profiles. Our deterministic mathematical engine scores proficiency gaps (Required &minus; Current).</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="journey-step-card">
+            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold fs-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 64px; height: 64px;">3</div>
+            <h5 class="fw-bold text-dark mb-2">Execute Adaptive Curriculum</h5>
+            <p class="text-muted small mb-0">Follow week-by-week activities, build production GitHub portfolio projects, and verify continuous growth with diagnostic quizzes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       2. SIX MAIN FEATURES
+       ===================================================================== -->
+  <section class="py-5" id="features">
+    <div class="container px-4 py-4">
+      <div class="text-center mb-5">
+        <div class="feature-badge mb-2">Comprehensive SaaS Suite</div>
+        <h2 class="display-6 fw-bold">Six Pillars of Career Transformation</h2>
+        <p class="text-muted mx-auto" style="max-width: 660px;">
+          Every module is built with purpose-driven intelligence to guide you from where you are to where you belong.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Feature 1 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-file-earmark-person"></i>
+            </div>
+            <h5 class="fw-bold text-dark">1. Resume Analysis Engine</h5>
+            <p class="text-muted small flex-grow-1">
+              Extracts 9 structured dimensions from resumes: personal info, summary, verified skills, projects, and coursework with zero hallucinations.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              Analyze Resume <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-compass"></i>
+            </div>
+            <h5 class="fw-bold text-dark">2. AI Career Recommender</h5>
+            <p class="text-muted small flex-grow-1">
+              Evaluates profile evidence against 13 industry roles to surface your Top 5 compatible tracks with transparent, explainable justifications.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              Explore Matches <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-bar-chart-steps"></i>
+            </div>
+            <h5 class="fw-bold text-dark">3. Skill Gap Analyzer</h5>
+            <p class="text-muted small flex-grow-1">
+              Categorizes skills into Have, Improve, and Missing with customizable candidate self-assessment levels and downloadable JSON reports.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              Diagnose Gaps <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-signpost-2"></i>
+            </div>
+            <h5 class="fw-bold text-dark">4. Personalized Roadmap</h5>
+            <p class="text-muted small flex-grow-1">
+              Dynamically sequences a week-by-week learning curriculum based on your target hours per week, milestones, and verified documentation links.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              View Roadmap <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-code-square"></i>
+            </div>
+            <h5 class="fw-bold text-dark">5. Projects & Portfolio</h5>
+            <p class="text-muted small flex-grow-1">
+              Practical portfolio project blueprints specifically designed to address skill gaps, with architecture guidelines, GitHub tracking, and live demos.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              Build Projects <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-box-3d">
+            <div class="feature-icon-badge">
+              <i class="bi bi-lightning-charge"></i>
+            </div>
+            <h5 class="fw-bold text-dark">6. Adaptive Learning & Quizzes</h5>
+            <p class="text-muted small flex-grow-1">
+              Continuous intelligence monitoring weak areas, suggesting "What Should I Learn Next?", and verifying skill proficiency with interactive quizzes.
+            </p>
+            <a href="/login" class="text-decoration-none fw-semibold text-primary small d-inline-flex align-items-center gap-1">
+              Take Quizzes <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       3. CAREER TRANSFORMATION JOURNEY
+       ===================================================================== -->
+  <section class="py-5 bg-white border-top border-bottom" id="journey">
+    <div class="container px-4 py-4">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5">
+          <div class="feature-badge mb-2">Progression Pathway</div>
+          <h2 class="display-6 fw-bold mb-3">From Uncertainty to Industry Readiness</h2>
+          <p class="text-muted mb-4">
+            Traditional career pivoters spend months reading fragmented tutorials without knowing what hiring managers actually evaluate. PATHFORGE AI structures the path into measurable, verified milestones.
+          </p>
+
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-primary-subtle text-primary p-2 mt-1">
+                <i class="bi bi-crosshair fs-5"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Targeted Role Alignment</h6>
+                <p class="text-muted small mb-0">Never waste time learning redundant skills outside your target engineering track.</p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-success-subtle text-success p-2 mt-1">
+                <i class="bi bi-check2-all fs-5"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Evidentiary Verification</h6>
+                <p class="text-muted small mb-0">Every claim is backed by real project code, verifiable quizzes, and structured evidence.</p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-warning-subtle text-warning p-2 mt-1">
+                <i class="bi bi-arrow-repeat fs-5"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Adaptive Pacing</h6>
+                <p class="text-muted small mb-0">If you struggle with a topic, the curriculum adapts non-destructively without resetting work.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="glass-card p-4 p-md-5">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-diagram-3-fill text-primary me-2"></i> Real Candidate Transformation Timeline</h5>
+            
+            <div class="roadmap-timeline">
+              <div class="roadmap-milestone-node">
+                <div class="milestone-dot completed"><i class="bi bi-check-lg"></i></div>
+                <div class="glass-card p-3">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-success">Stage 1: Completed</span>
+                    <span class="text-muted small">Week 1</span>
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">Resume Verification & Skill Audit</h6>
+                  <p class="text-muted small mb-0">Extracted 7 core skills and mapped proficiency against 13 industry roles.</p>
+                </div>
+              </div>
+
+              <div class="roadmap-milestone-node">
+                <div class="milestone-dot in-progress"><i class="bi bi-play-fill"></i></div>
+                <div class="glass-card p-3 border-primary">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-warning text-dark">Stage 2: Active</span>
+                    <span class="text-muted small">Weeks 2 &ndash; 4</span>
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">Closing Priority Backend Gaps</h6>
+                  <p class="text-muted small mb-0">Mastering REST APIs, async database pools, and unit testing via live projects.</p>
+                </div>
+              </div>
+
+              <div class="roadmap-milestone-node">
+                <div class="milestone-dot"><i class="bi bi-circle"></i></div>
+                <div class="glass-card p-3">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-secondary">Stage 3: Next Up</span>
+                    <span class="text-muted small">Weeks 5 &ndash; 8</span>
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">Capstone Portfolio & Recruiter Verification</h6>
+                  <p class="text-muted small mb-0">Finalizing live cloud-deployed project with comprehensive README and test coverage.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       4. INTERACTIVE SKILL DEVELOPMENT PREVIEW
+       ===================================================================== -->
+  <section class="py-5" id="interactive-preview">
+    <div class="container px-4 py-4">
+      <div class="text-center mb-5">
+        <div class="feature-badge mb-2">Live Demonstration</div>
+        <h2 class="display-6 fw-bold">Interactive Skill Gap Engine Preview</h2>
+        <p class="text-muted mx-auto" style="max-width: 620px;">
+          See how our deterministic engine classifies skills between candidate capability and industry benchmark.
+        </p>
+      </div>
+
+      <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 960px;">
+        <div class="row align-items-center g-4 mb-4">
+          <div class="col-md-6">
+            <span class="text-muted small text-uppercase fw-bold">Sample Selected Track</span>
+            <h4 class="fw-bold text-dark mb-0">Backend Developer (FastAPI & PostgreSQL)</h4>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">Target Role Compatibility: 86%</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Required Competency</th>
+                <th>Required Level</th>
+                <th>Candidate Level</th>
+                <th>Calculated Gap</th>
+                <th>Classification</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fw-bold text-dark">Python</td>
+                <td><span class="badge bg-secondary">Level 3 (Advanced)</span></td>
+                <td><span class="badge bg-primary">Level 3 (Advanced)</span></td>
+                <td><span class="badge bg-success">Gap = 0</span></td>
+                <td><span class="skill-tag-have"><i class="bi bi-check-circle-fill"></i> Matched</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-dark">FastAPI & Async</td>
+                <td><span class="badge bg-secondary">Level 3 (Advanced)</span></td>
+                <td><span class="badge bg-warning text-dark">Level 2 (Intermediate)</span></td>
+                <td><span class="badge bg-warning text-dark">Gap = +1</span></td>
+                <td><span class="skill-tag-improve"><i class="bi bi-arrow-up-circle-fill"></i> Level Up</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-dark">Docker & Containers</td>
+                <td><span class="badge bg-secondary">Level 2 (Intermediate)</span></td>
+                <td><span class="badge bg-light text-muted border">Level 0 (Not Found)</span></td>
+                <td><span class="badge bg-danger">Gap = +2</span></td>
+                <td><span class="skill-tag-missing"><i class="bi bi-exclamation-triangle-fill"></i> Missing</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-dark">SQL & Relational DBs</td>
+                <td><span class="badge bg-secondary">Level 2 (Intermediate)</span></td>
+                <td><span class="badge bg-primary">Level 3 (Advanced)</span></td>
+                <td><span class="badge bg-success">Gap = -1 (Surplus)</span></td>
+                <td><span class="skill-tag-have"><i class="bi bi-check-circle-fill"></i> Matched</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       5. WHY CHOOSE PATHFORGE AI
+       ===================================================================== -->
+  <section class="py-5 bg-white border-top border-bottom" id="benefits">
+    <div class="container px-4 py-4">
+      <div class="text-center mb-5">
+        <div class="feature-badge mb-2">Data-Backed Value</div>
+        <h2 class="display-6 fw-bold">Why Engineers Choose PATHFORGE AI</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+          Built differently from superficial quiz apps or generic certificate courses.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="glass-card p-4 h-100">
+            <div class="feature-icon-badge text-success bg-success-subtle">
+              <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Fresher & Career Changer Friendly</h5>
+            <p class="text-muted small mb-0">
+              Evaluates academic projects, self-taught repositories, and verified coursework even with zero years of formal corporate employment.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="glass-card p-4 h-100">
+            <div class="feature-icon-badge text-primary bg-primary-subtle">
+              <i class="bi bi-check2-circle"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Deterministic Math Engine</h5>
+            <p class="text-muted small mb-0">
+              Calculates transparent mathematical coverage scores based on evidence rather than black-box guesswork or probabilistic hallucination.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="glass-card p-4 h-100">
+            <div class="feature-icon-badge text-warning bg-warning-subtle">
+              <i class="bi bi-github"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Portfolio-Ready Deliverables</h5>
+            <p class="text-muted small mb-0">
+              Provides complete technical problem statements, architecture guides, and recruiter-ready GitHub milestones for proof of competence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       6. FINAL CALL TO ACTION
+       ===================================================================== -->
+  <section class="py-5">
+    <div class="container px-4 py-5">
+      <div class="glass-card p-5 text-center mx-auto" style="max-width: 860px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 245, 255, 0.95) 100%);">
+        <h2 class="display-5 fw-bold mb-3">Ready to Accelerate Your <span class="brand-gradient">Tech Career?</span></h2>
+        <p class="lead text-muted mb-4 mx-auto" style="max-width: 580px;">
+          Join ambitious engineers transforming their skillsets with verified AI intelligence, structured roadmaps, and real projects.
+        </p>
+        <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+          <a href="/login?mode=signup" class="btn btn-primary-gradient rounded-pill px-5 py-3 fs-6 fw-bold">
+            Get Started Free <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+          <a href="/login" class="btn btn-outline-custom rounded-pill px-4 py-3 fs-6 fw-semibold">
+            Sign In to Existing Account
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       7. PROFESSIONAL FOOTER
+       ===================================================================== -->
+  <footer class="py-5 border-top bg-white">
+    <div class="container px-4">
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="brand-badge">PF</div>
+            <span class="brand-gradient fs-4 fw-bold">PATHFORGE<span style="color: var(--primary-blue);">.AI</span></span>
+          </div>
+          <p class="text-muted small" style="max-width: 320px;">
+            The verified AI career transition platform. Discover trajectories, diagnose gaps, and execute adaptive curricula tailored to your background.
+          </p>
+        </div>
+
+        <div class="col-md-2 col-6">
+          <h6 class="fw-bold text-dark mb-3">Platform</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small">
+            <li><a href="/career-recommender" class="text-muted text-decoration-none hover-blue">Career Discovery</a></li>
+            <li><a href="/resume-analysis" class="text-muted text-decoration-none hover-blue">Resume Analyzer</a></li>
+            <li><a href="/skill-gap-analyzer" class="text-muted text-decoration-none hover-blue">Skill Gap Engine</a></li>
+            <li><a href="/personalized-roadmap" class="text-muted text-decoration-none hover-blue">Career Roadmap</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-2 col-6">
+          <h6 class="fw-bold text-dark mb-3">Mastery</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small">
+            <li><a href="/project-recommendations" class="text-muted text-decoration-none hover-blue">Project Blueprints</a></li>
+            <li><a href="/adaptive-learning" class="text-muted text-decoration-none hover-blue">Adaptive Intelligence</a></li>
+            <li><a href="/quizzes" class="text-muted text-decoration-none hover-blue">Topic Quizzes</a></li>
+            <li><a href="/dashboard" class="text-muted text-decoration-none hover-blue">SaaS Dashboard</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-4">
+          <h6 class="fw-bold text-dark mb-3">Security & Privacy</h6>
+          <p class="text-muted small">
+            Built with enterprise-grade Supabase PostgreSQL Row Level Security (RLS). Your resume data is strictly isolated and never used for public model training.
+          </p>
+          <div class="badge bg-light border text-muted px-3 py-2 rounded-pill">
+            <i class="bi bi-shield-lock-fill text-success me-1"></i> RLS Secured &bull; Zero Data Leaks
+          </div>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small">
+        <div>&copy; 2026 PATHFORGE AI. All rights reserved.</div>
+        <div>Engineered for Engineering Career Success</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Server Configuration variables injected via Jinja2 -->
+  <script>
+    window.PATHFORGE_CONFIG = {
+      supabaseUrl: "{{ supabase_url }}",
+      supabaseKey: "{{ supabase_key }}"
+    };
+  </script>
+  <!-- Supabase JS Client for Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- App Shell -->
+  <script src="/static/js/app-shell.js"></script>
+</body>
+</html>

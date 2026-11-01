@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% block title %}PATHFORGE AI | Interactive Quizzes & Assessments{% endblock %}
+{% block breadcrumb %}Quizzes & Assessments{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+  <!-- Header Banner -->
+  <header class="text-center mb-5">
+    <div class="feature-badge mb-3">
+      <i class="bi bi-patch-question-fill text-danger me-1"></i> Feature 6: Verified Diagnostic Evaluations
+    </div>
+    <h1 class="display-5 fw-bold mb-3 text-dark">
+      Assess &amp; Verify Your <span class="brand-gradient">Technical Proficiency</span>
+    </h1>
+    <p class="text-muted lead mx-auto" style="max-width: 680px;">
+      Test your practical engineering competencies with verified diagnostic assessments. Score 70% or higher to validate proficiency in your adaptive learning radar.
+    </p>
+  </header>
+
+  <!-- Global Alert Box -->
+  <div id="quizAlert" class="alert d-none p-3 mb-4 rounded-3 border" role="alert">
+    <div class="d-flex align-items-center gap-2">
+      <i id="quizAlertIcon" class="bi fs-5"></i>
+      <span id="quizAlertMessage" class="small fw-medium"></span>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       CONTAINER 1: SKILL ASSESSMENT TOPIC BROWSER (DEFAULT VIEW)
+       =================================================================== -->
+  <div id="quizCatalogView">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">Select Assessment Topic</h4>
+        <p class="text-muted small mb-0">Choose a technical domain to initiate your diagnostic evaluation.</p>
+      </div>
+      <span class="badge bg-light border text-muted px-3 py-2 rounded-pill">
+        <i class="bi bi-clock me-1 text-primary"></i> ~5 Minutes Per Quiz
+      </span>
+    </div>
+
+    <div class="row g-4" id="skillTopicsGrid">
+      <!-- Cards populated dynamically or predefined list -->
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-primary bg-primary-subtle">
+              <i class="bi bi-code-slash"></i>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Foundational</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Python Programming</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Data structures, immutability, generator functions, memory efficiency, and asyncio concurrency primitives.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="Python">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-info bg-info-subtle">
+              <i class="bi bi-database"></i>
+            </div>
+            <span class="badge bg-info-subtle text-info">Databases</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">SQL &amp; Relational Databases</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Aggregations, GROUP BY queries, indexing strategies (B-Tree), query optimization, and table joins.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="SQL">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-success bg-success-subtle">
+              <i class="bi bi-hdd-network"></i>
+            </div>
+            <span class="badge bg-success-subtle text-success">Backend</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">FastAPI &amp; REST Architecture</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Pydantic validation, dependency injection (Depends), async endpoints, serialization, and status codes.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="FastAPI">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-warning bg-warning-subtle">
+              <i class="bi bi-box-seam"></i>
+            </div>
+            <span class="badge bg-warning-subtle text-warning">Cloud &amp; DevOps</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Docker &amp; Containerization</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Dockerfiles, multi-stage builds, port mappings, volumes, bridge networks, and container isolation.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="Docker">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-primary bg-primary-subtle">
+              <i class="bi bi-diagram-2"></i>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Core CS</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Data Structures &amp; Algorithms</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Time &amp; space Big-O complexity, hash tables, binary search trees, traversal algorithms, and caching.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="Data Structures">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="glass-card-elevated p-4 h-100 card-3d d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="feature-icon-badge mb-0 text-danger bg-danger-subtle">
+              <i class="bi bi-git"></i>
+            </div>
+            <span class="badge bg-danger-subtle text-danger">Tools</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Git Version Control</h5>
+          <p class="text-muted small mb-3 flex-grow-1">
+            Branching workflows, rebasing vs merging, conflict resolution, cherry-picking, and pull request reviews.
+          </p>
+          <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+            <span class="text-muted small"><i class="bi bi-list-check me-1"></i> 3 Questions</span>
+            <button class="btn btn-primary-gradient btn-sm rounded-pill px-3 start-topic-btn" data-skill="Git">
+              Start Quiz <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       STAGE 1: QUIZ INTRODUCTION SCREEN
+       =================================================================== -->
+  <div id="quizIntroView" class="d-none">
+    <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 780px;">
+      <button class="btn btn-sm btn-outline-custom rounded-pill mb-4" id="introBackBtn">
+        <i class="bi bi-arrow-left me-1"></i> Back to All Topics
+      </button>
+
+      <div class="text-center mb-4">
+        <div class="feature-icon-badge mx-auto mb-3" style="width: 64px; height: 64px; font-size: 1.8rem;">
+          <i class="bi bi-patch-question"></i>
+        </div>
+        <h2 class="fw-bold text-dark mb-2" id="introQuizTitle">Python Skill Assessment</h2>
+        <p class="text-muted lead mx-auto" id="introQuizDesc" style="max-width: 540px; font-size: 1rem;">
+          Evaluate your understanding of core concepts, memory patterns, and best practices.
+        </p>
+      </div>
+
+      <!-- Quiz Specifications Card -->
+      <div class="row g-3 text-center mb-4">
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border">
+            <div class="text-muted small mb-1">Questions</div>
+            <div class="fw-bold fs-5 text-dark" id="introTotalQuestions">3 Questions</div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border">
+            <div class="text-muted small mb-1">Est. Duration</div>
+            <div class="fw-bold fs-5 text-dark">~5 Minutes</div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border">
+            <div class="text-muted small mb-1">Passing Benchmark</div>
+            <div class="fw-bold fs-5 text-success">70% Score</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions List -->
+      <div class="p-3 rounded-3 bg-light border mb-4">
+        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-info-circle text-primary me-2"></i> Assessment Guidelines:</h6>
+        <ul class="text-muted small mb-0 ps-3 d-flex flex-column gap-1">
+          <li>Select the single best answer for each multiple-choice question.</li>
+          <li>You can navigate back and forth between questions before submitting.</li>
+          <li>Detailed explanations for every question will be provided upon submission.</li>
+          <li>Passing this assessment validates verified proficiency in your adaptive learning profile.</li>
+        </ul>
+      </div>
+
+      <!-- Start Button -->
+      <button class="btn btn-primary-gradient w-100 py-3 rounded-pill fw-bold fs-6" id="beginQuizTakingBtn">
+        Start Assessment Now <i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       STAGE 2: QUIZ TAKING SCREEN
+       =================================================================== -->
+  <div id="quizTakingView" class="d-none">
+    <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 820px;">
+      
+      <!-- Top Meta Bar: Progress & Question Counter -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-bold" id="takingSkillBadge">
+          Python
+        </span>
+        <span class="text-muted small fw-semibold" id="questionCounterText">
+          Question 1 of 3
+        </span>
+      </div>
+
+      <!-- Question Progress Bar -->
+      <div class="progress-3d mb-4">
+        <div class="progress-bar" id="quizProgressBar" style="width: 33.3%;"></div>
+      </div>
+
+      <!-- Active Question Content Card -->
+      <div class="mb-4">
+        <h5 class="fw-bold text-dark mb-4" id="currentQuestionTitle" style="line-height: 1.4;">
+          Loading question text...
+        </h5>
+
+        <!-- Options Container -->
+        <div class="d-flex flex-column gap-3" id="optionsContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Navigation & Submit Controls -->
+      <div class="d-flex align-items-center justify-content-between pt-4 border-top">
+        <button class="btn btn-outline-custom rounded-pill px-4" id="prevQuestionBtn" disabled>
+          <i class="bi bi-arrow-left me-1"></i> Previous
+        </button>
+
+        <button class="btn btn-outline-custom rounded-pill px-4" id="nextQuestionBtn">
+          Next <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+
+        <button class="btn btn-primary-gradient rounded-pill px-4 d-none" id="submitAssessmentBtn">
+          <span id="submitQuizSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+          <span>Submit Quiz</span> <i class="bi bi-send-check ms-1"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       STAGE 3: QUIZ RESULTS SCREEN
+       =================================================================== -->
+  <div id="quizResultsView" class="d-none">
+    <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 840px;">
+
+      <!-- Results Header Banner -->
+      <div class="text-center mb-5">
+        <div id="resultStatusBadgeContainer" class="mb-3">
+          <!-- Passed / Needs Practice badge -->
+        </div>
+        <h2 class="display-6 fw-bold mb-2 text-dark" id="resultStatusHeading">
+          Assessment Completed!
+        </h2>
+        <p class="text-muted mx-auto" id="resultStatusSubheading" style="max-width: 540px;">
+          Review your score breakdown and question explanations below.
+        </p>
+
+        <!-- Circular Score Display -->
+        <div class="d-inline-flex flex-column align-items-center justify-content-center p-4 rounded-circle my-3 shadow-md border" style="width: 140px; height: 140px; background: #FFFFFF;" id="resultScoreRing">
+          <div class="display-5 fw-bold" id="resultScorePercentage">100%</div>
+          <span class="text-muted small" style="font-size: 0.72rem;">Score</span>
+        </div>
+
+        <div class="text-muted small" id="resultRatioText">3 of 3 Questions Correct</div>
+      </div>
+
+      <!-- Detailed Question Review List -->
+      <div class="mb-5">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-journal-text text-primary me-2"></i> Detailed Question Review</h5>
+        <div class="d-flex flex-column gap-3" id="detailedReviewContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap pt-3 border-top">
+        <button class="btn btn-outline-custom rounded-pill px-4 py-2" id="retakeQuizBtn">
+          <i class="bi bi-arrow-repeat me-1"></i> Retake This Quiz
+        </button>
+        <button class="btn btn-outline-custom rounded-pill px-4 py-2" id="exploreOtherQuizzesBtn">
+          <i class="bi bi-grid me-1"></i> Explore Other Topics
+        </button>
+        <a href="/dashboard" class="btn btn-primary-gradient rounded-pill px-4 py-2">
+          <i class="bi bi-house-door me-1"></i> Return to Dashboard
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/quizzes.js"></script>
+{% endblock %}

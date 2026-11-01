@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentLevel = activeOverrides[s.name] || s.level || 1;
       return `
         <div class="skill-level-chip">
-          <span class="text-white small fw-bold">${s.name}</span>
+          <span class="text-dark small fw-bold">${s.name}</span>
           <select class="skill-level-select" data-skill="${s.name}">
             <option value="1" ${currentLevel === 1 ? 'selected' : ''}>${levelNames[1]}</option>
             <option value="2" ${currentLevel === 2 ? 'selected' : ''}>${levelNames[2]}</option>
@@ -523,12 +523,12 @@ document.addEventListener("DOMContentLoaded", () => {
       skillsHaveList.innerHTML = matched.map(item => `
         <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.14); border: 1.5px solid rgba(52, 211, 153, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="fw-bold text-dark fs-6">${item.name}</span>
             <span class="badge bg-success text-white small" style="font-size: 0.72rem;">
               <i class="bi bi-check-circle-fill me-1"></i> Meets Req (${item.current_level_name})
             </span>
           </div>
-          <div class="text-white small" style="font-size: 0.82rem; line-height: 1.4;">${item.evidence}</div>
+          <div class="text-muted small" style="font-size: 0.82rem; line-height: 1.4;">${item.evidence}</div>
         </div>
       `).join("");
     } else {
@@ -540,14 +540,14 @@ document.addEventListener("DOMContentLoaded", () => {
       skillsImproveList.innerHTML = improve.map(item => `
         <div class="p-3 rounded-3" style="background: rgba(245, 158, 11, 0.14); border: 1.5px solid rgba(251, 191, 36, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="fw-bold text-dark fs-6">${item.name}</span>
             <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-warning text-dark'} small" style="font-size: 0.72rem;">
               ${item.priority} Priority &bull; Gap: +${item.gap}
             </span>
           </div>
-          <div class="small mb-1 text-light">Current: <strong>${item.current_level_name}</strong> &rarr; Target: <strong>${item.required_level_name}</strong></div>
-          <div class="text-white mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
-          <div class="small fw-semibold" style="color: #fef08a; font-size: 0.78rem;"><strong>Action:</strong> ${item.action}</div>
+          <div class="small mb-1 text-muted">Current: <strong>${item.current_level_name}</strong> &rarr; Target: <strong>${item.required_level_name}</strong></div>
+          <div class="text-muted mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
+          <div class="small fw-semibold text-warning" style="font-size: 0.78rem;"><strong>Action:</strong> ${item.action}</div>
         </div>
       `).join("");
     } else {
@@ -559,14 +559,14 @@ document.addEventListener("DOMContentLoaded", () => {
       skillsMissingList.innerHTML = missing.map(item => `
         <div class="p-3 rounded-3" style="background: rgba(239, 68, 68, 0.14); border: 1.5px solid rgba(248, 113, 113, 0.55);">
           <div class="d-flex align-items-center justify-content-between mb-1">
-            <span class="fw-bold text-white fs-6">${item.name}</span>
+            <span class="fw-bold text-dark fs-6">${item.name}</span>
             <span class="badge ${item.priority === 'High' ? 'bg-danger text-white' : 'bg-secondary text-white'} small" style="font-size: 0.72rem;">
               ${item.priority} Priority &bull; Target: ${item.required_level_name}
             </span>
           </div>
-          <div class="badge bg-dark border border-secondary text-white small mb-2" style="font-size: 0.72rem;">Unverified in profile</div>
-          <div class="text-white mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
-          <div class="small fw-semibold" style="color: #fecdd3; font-size: 0.78rem;"><strong>Roadmap:</strong> ${item.action}</div>
+          <div class="badge bg-light border text-danger small mb-2" style="font-size: 0.72rem;">Unverified in profile</div>
+          <div class="text-muted mb-2" style="font-size: 0.84rem; line-height: 1.4;">${item.why_matters}</div>
+          <div class="small fw-semibold text-danger" style="font-size: 0.78rem;"><strong>Roadmap:</strong> ${item.action}</div>
         </div>
       `).join("");
     } else {
@@ -586,18 +586,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return `
           <tr>
-            <td class="fw-bold text-white fs-6">${gap.skill}</td>
-            <td><span class="badge bg-dark border border-secondary text-white small">${gap.category}</span></td>
+            <td class="fw-bold text-dark fs-6">${gap.skill}</td>
+            <td><span class="badge bg-light border text-muted small">${gap.category}</span></td>
             <td>${priorityBadge}</td>
-            <td class="text-white small">${gap.current_level}</td>
+            <td class="text-dark small">${gap.current_level}</td>
             <td class="text-primary fw-semibold small">${gap.required_level}</td>
-            <td><span class="badge bg-dark border border-secondary text-white small">${gap.status}</span></td>
-            <td class="text-white small" style="font-size: 0.85rem;">${gap.action}</td>
+            <td><span class="badge bg-light border text-muted small">${gap.status}</span></td>
+            <td class="text-muted small" style="font-size: 0.85rem;">${gap.action}</td>
           </tr>
         `;
       }).join("");
     } else {
-      priorityGapsTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-white">No priority skill gaps identified.</td></tr>';
+      priorityGapsTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">No priority skill gaps identified.</td></tr>';
     }
 
     // Category Breakdown Radar/Cards
@@ -609,13 +609,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       return `
         <div class="col-md-6 col-lg-3">
-          <div class="p-3 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);">
-            <div class="fw-semibold text-white small mb-1">${catName}</div>
+          <div class="p-3 rounded-3 h-100 bg-white border shadow-xs">
+            <div class="fw-semibold text-dark small mb-1">${catName}</div>
             <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="fs-5 fw-bold text-primary">${pct}%</span>
               <span class="text-muted small">${catMatched} / ${catTotal} Met</span>
             </div>
-            <div class="progress bg-dark" style="height: 6px; border-radius: 9999px;">
+            <div class="progress bg-light" style="height: 6px; border-radius: 9999px;">
               <div class="progress-bar bg-primary" style="width: ${pct}%"></div>
             </div>
           </div>

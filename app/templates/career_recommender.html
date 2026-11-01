@@ -1,223 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PATHFORGE AI | Career Path Recommender</title>
-  
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{% extends "base.html" %}
 
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Modern Minimal SaaS CSS -->
-  <link rel="stylesheet" href="/static/css/resume_analysis.css">
-  <link rel="stylesheet" href="/static/css/career_recommender.css">
-</head>
-<body>
+{% block title %}PATHFORGE AI | Career Path Recommender{% endblock %}
+{% block breadcrumb %}Career Discovery{% endblock %}
 
-  <!-- Top Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-        <div class="brand-badge">PF</div>
-        <span class="brand-gradient fs-4">PATHFORGE<span>.AI</span></span>
-      </a>
+{% block content %}
+<div class="container-fluid px-0">
 
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <!-- Hero Header -->
+  <header class="text-center mb-5">
+    <div class="feature-badge mb-3">
+      <i class="bi bi-compass text-primary me-1"></i> Feature 2: AI Career Path Recommender
+    </div>
+    <h1 class="display-5 fw-bold mb-3 text-dark">
+      Discover Your Next <span class="brand-gradient">Career Trajectory</span>
+    </h1>
+    <p class="text-muted lead mx-auto" style="max-width: 720px;">
+      Powered by verified profile evidence and AI intelligence. We match your skills, education, and projects against 13 industry roles to surface your top five high-compatibility career paths.
+    </p>
+  </header>
 
-      <!-- App Navigation Links -->
-      <div class="collapse navbar-collapse show" id="navbarNav">
-        <ul class="navbar-nav me-auto ms-4 mb-2 mb-lg-0 gap-1">
-          <li class="nav-item">
-            <a class="nav-link" href="/resume-analysis">
-              <i class="bi bi-file-earmark-person me-1"></i> Resume Analyzer
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/career-recommender">
-              <i class="bi bi-compass me-1"></i> Career Recommender
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/skill-gap-analyzer">
-              <i class="bi bi-bar-chart-steps me-1"></i> Skill Gap Analyzer
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/personalized-roadmap">
-              <i class="bi bi-signpost-2 me-1"></i> Learning Roadmap
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/project-recommendations">
-              <i class="bi bi-code-square me-1"></i> Projects & Portfolio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 py-2 rounded-pill text-muted hover-light" href="/adaptive-learning">
-              <i class="bi bi-lightning-charge me-1"></i> Adaptive Learning
-            </a>
-          </li>
-        </ul>
-      </div>
+  <!-- Global Alert Box -->
+  <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
+    <div class="d-flex align-items-center gap-2">
+      <i id="alertIcon" class="bi fs-4"></i>
+      <div id="alertMessage" class="fw-medium"></div>
+    </div>
+  </div>
 
+  <!-- Active Target Career Banner (If selected) -->
+  <div id="activeTargetBanner" class="glass-card p-4 mb-4 d-none" style="background: linear-gradient(135deg, rgba(235, 242, 255, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%); border: 1.5px solid rgba(71, 118, 255, 0.3);">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div class="d-flex align-items-center gap-3">
-        <!-- Auth Status Container -->
-        <div id="authStatusContainer" class="d-flex align-items-center gap-2">
-          <span id="userEmailBadge" class="badge rounded-pill bg-dark border border-secondary text-light px-3 py-2">
-            <i class="bi bi-person-circle me-1 text-primary"></i> <span id="userEmailText">Authenticated User</span>
-          </span>
-          <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2" title="Sign out of PATHFORGE AI">
-            <i class="bi bi-box-arrow-right me-1"></i> Logout
-          </button>
+        <div class="avatar-circle" style="width: 48px; height: 48px; font-size: 1.25rem;">
+          <i class="bi bi-bullseye"></i>
         </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content Container -->
-  <main class="container py-5">
-
-    <!-- Hero Header -->
-    <header class="text-center mb-5">
-      <div class="feature-badge mb-3">
-        <i class="bi bi-compass me-1"></i> Feature 2: AI Career Path Recommender
-      </div>
-      <h1 class="display-5 fw-bold mb-3 text-white">Discover Your Next <span class="brand-gradient">Career Trajectory</span></h1>
-      <p class="lead mx-auto" style="color: #cbd5e1; max-width: 720px; font-weight: 450;">
-        Powered by your verified resume data and Claude AI intelligence. We match your skills, education, and projects against 13 industry roles to surface your top five high-compatibility career paths.
-      </p>
-    </header>
-
-    <!-- Global Alert Box -->
-    <div id="alertBox" class="alert d-none mb-4 glass-card border-0" role="alert">
-      <div class="d-flex align-items-center gap-2">
-        <i id="alertIcon" class="bi fs-4"></i>
-        <div id="alertMessage" class="fw-medium"></div>
-      </div>
-    </div>
-
-    <!-- Active Target Career Banner (If selected) -->
-    <div id="activeTargetBanner" class="glass-card p-4 mb-4 d-none" style="background: #eef2ff; border: 1.5px solid #c7d2fe;">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div class="d-flex align-items-center gap-3">
-          <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white" style="width: 44px; height: 44px;">
-            <i class="bi bi-bullseye fs-5 text-white"></i>
-          </div>
-          <div>
-            <div class="text-muted small text-uppercase tracking-wider">Your Active Target Career</div>
-            <h4 class="fw-bold text-white mb-0" id="activeTargetTitle">Full Stack Developer</h4>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <a href="/skill-gap-analyzer" class="btn btn-primary-gradient rounded-pill px-4 py-2">
-            <i class="bi bi-bar-chart-steps me-1"></i> Analyze Skill Gaps <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Preferences and Filter Bar -->
-    <section class="glass-card p-4 mb-5">
-      <div class="row g-3 align-items-end">
-        <div class="col-md-5">
-          <label class="form-label text-light small fw-semibold">Career Interests / Desired Roles (Optional)</label>
-          <input type="text" id="prefRolesInput" class="form-control auth-control" placeholder="e.g. AI Engineer, Python Developer, Data Analyst">
-          <div class="form-text text-muted" style="font-size: 0.75rem;">Comma-separated keywords to tailor match weighting.</div>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label text-light small fw-semibold">Preferred Work Arrangement</label>
-          <select id="prefWorkMode" class="form-select auth-control">
-            <option value="Any" selected>Any (Remote, Hybrid, On-site)</option>
-            <option value="Remote">Remote Preferred</option>
-            <option value="Hybrid">Hybrid Preferred</option>
-            <option value="On-site">On-site Preferred</option>
-          </select>
-        </div>
-        <div class="col-md-3 d-flex gap-2">
-          <button id="generateRecsBtn" class="btn btn-primary-gradient w-100 rounded-pill py-2">
-            <span id="recsSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-            <i class="bi bi-magic me-1"></i> Match Careers
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Loading Placeholder -->
-    <div id="loadingPlaceholder" class="glass-card p-5 text-center mb-5 d-none">
-      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-      <h4 class="fw-bold text-white">Analyzing Career Trajectories...</h4>
-      <p class="text-muted">Evaluating skill overlaps, industry demands, and career paths against your resume profile.</p>
-    </div>
-
-    <!-- Recommendations Container -->
-    <section id="recommendationsContainer">
-      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
         <div>
-          <h3 class="fw-bold mb-1"><i class="bi bi-stars text-primary me-2"></i> Top 5 Recommended Career Paths</h3>
-          <p class="text-muted small mb-0">Ranked by factual skill evidence, academic foundations, and career compatibility.</p>
+          <div class="text-muted small text-uppercase tracking-wider fw-semibold">Your Active Target Career</div>
+          <h4 class="fw-bold text-dark mb-0" id="activeTargetTitle">Full Stack Developer</h4>
         </div>
-        <button class="btn btn-outline-custom btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#catalogueModal">
-          <i class="bi bi-grid-3x3-gap me-1"></i> Browse All 13 Roles
-        </button>
       </div>
-
-      <div class="row g-4" id="recommendationsList">
-        <!-- Dynamically populated cards -->
-      </div>
-    </section>
-
-    <!-- Disclaimer Note -->
-    <div class="mt-5 text-center">
-      <p class="text-muted small" style="font-size: 0.8rem;">
-        <i class="bi bi-info-circle me-1"></i>
-        Disclaimer: Compatibility scores and career recommendations are generated for educational and career-planning guidance based on profile evidence. They do not constitute a guarantee of employment.
-      </p>
-    </div>
-
-  </main>
-
-  <!-- Complete 13 Roles Catalogue Modal -->
-  <div class="modal fade" id="catalogueModal" tabindex="-1" aria-labelledby="catalogueModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content glass-card border-0 text-white" style="background: #0f172a; border: 1px solid var(--border-subtle);">
-        <div class="modal-header border-secondary border-opacity-50">
-          <h5 class="modal-title fw-bold" id="catalogueModalLabel">
-            <i class="bi bi-journal-bookmark me-2 text-primary"></i> PATHFORGE Career Role Catalogue (13 Industry Domains)
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4" id="catalogueModalBody">
-          <!-- Populated dynamically -->
-        </div>
+      <div class="d-flex align-items-center gap-2">
+        <a href="/skill-gap-analyzer" class="btn btn-primary-gradient rounded-pill px-4 py-2">
+          <i class="bi bi-bar-chart-steps me-1"></i> Analyze Skill Gaps <i class="bi bi-arrow-right ms-1"></i>
+        </a>
       </div>
     </div>
   </div>
 
-  <!-- Server Configuration variables injected via Jinja2 -->
-  <script>
-    window.PATHFORGE_CONFIG = {
-      supabaseUrl: "{{ supabase_url }}",
-      supabaseKey: "{{ supabase_key }}"
-    };
-  </script>
+  <!-- Preferences and Filter Bar -->
+  <section class="glass-card p-4 p-md-5 mb-5">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold">Career Interests / Desired Roles (Optional)</label>
+        <input type="text" id="prefRolesInput" class="form-control" placeholder="e.g. AI Engineer, Python Developer, Data Analyst">
+        <div class="form-text text-muted" style="font-size: 0.75rem;">Comma-separated keywords to tailor match weighting.</div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Preferred Work Arrangement</label>
+        <select id="prefWorkMode" class="form-select">
+          <option value="Any" selected>Any (Remote, Hybrid, On-site)</option>
+          <option value="Remote">Remote Preferred</option>
+          <option value="Hybrid">Hybrid Preferred</option>
+          <option value="On-site">On-site Preferred</option>
+        </select>
+        <div class="form-text text-muted" style="font-size: 0.75rem;">Filter by employment arrangement preference.</div>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button id="generateRecsBtn" class="btn btn-primary-gradient w-100 rounded-pill py-3 fw-semibold">
+          <span id="recsSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+          <i class="bi bi-magic me-1"></i> Match Careers
+        </button>
+      </div>
+    </div>
+  </section>
 
-  <!-- Supabase JS Client for client-side Auth -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Bootstrap 5 Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Career Recommender JS -->
-  <script src="/static/js/career_recommender.js"></script>
-</body>
-</html>
+  <!-- Loading Placeholder -->
+  <div id="loadingPlaceholder" class="glass-card p-5 text-center mb-5 d-none">
+    <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+    <h4 class="fw-bold text-dark">Analyzing Career Trajectories...</h4>
+    <p class="text-muted">Evaluating skill overlaps, industry demands, and career paths against your resume profile.</p>
+  </div>
 
+  <!-- Recommendations Container -->
+  <section id="recommendationsContainer">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-stars text-primary me-2"></i> Top 5 Recommended Career Paths</h3>
+        <p class="text-muted small mb-0">Ranked by factual skill evidence, academic foundations, and career compatibility.</p>
+      </div>
+      <button class="btn btn-outline-custom btn-sm rounded-pill px-4 py-2" data-bs-toggle="modal" data-bs-target="#catalogueModal">
+        <i class="bi bi-grid-3x3-gap me-1"></i> Browse All 13 Roles
+      </button>
+    </div>
+
+    <div class="row g-4" id="recommendationsList">
+      <!-- Dynamically populated cards -->
+    </div>
+  </section>
+
+  <!-- Educational Disclaimer Note -->
+  <div class="mt-5 text-center">
+    <p class="text-muted small" style="font-size: 0.8rem;">
+      <i class="bi bi-info-circle me-1"></i>
+      Disclaimer: Compatibility scores and recommendations are generated for educational career-planning guidance based on profile evidence.
+    </p>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Complete 13 Roles Catalogue Modal (Light Modern SaaS) -->
+<div class="modal fade" id="catalogueModal" tabindex="-1" aria-labelledby="catalogueModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg" style="background: #FFFFFF; border-radius: 20px;">
+      <div class="modal-header border-bottom p-4">
+        <div>
+          <span class="badge bg-primary-subtle text-primary mb-1">Catalogue Browser</span>
+          <h5 class="modal-title fw-bold text-dark" id="catalogueModalLabel">
+            PATHFORGE Career Role Catalogue (13 Industry Tracks)
+          </h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 p-md-5" id="catalogueModalBody" style="background: var(--bg-main);">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/career_recommender.js"></script>
+{% endblock %}

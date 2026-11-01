@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
           recommendedProjectsList.innerHTML = `
             <div class="col-12 text-center py-5 glass-card">
               <i class="bi bi-bar-chart-steps fs-1 text-primary d-block mb-3"></i>
-              <h4 class="fw-bold text-white">No Skill Gap Report Found</h4>
+              <h4 class="fw-bold text-dark">No Skill Gap Report Found</h4>
               <p class="text-muted mb-4">PATHFORGE needs your skill gap analysis results to recommend targeted portfolio projects.</p>
               <a href="/skill-gap-analyzer" class="btn btn-primary-gradient rounded-pill px-4 py-2">
                 <i class="bi bi-lightning-charge me-1"></i> Go to Skill Gap Analyzer
@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
       portfolioProjectsList.innerHTML = `
         <div class="col-12 text-center py-5">
           <i class="bi bi-briefcase fs-1 text-primary d-block mb-2"></i>
-          <h5 class="fw-bold text-white">Your Portfolio is Currently Empty</h5>
+          <h5 class="fw-bold text-dark">Your Portfolio is Currently Empty</h5>
           <p class="text-muted small mb-0">Browse 'Recommended Projects' and click 'Save to Portfolio' to start building verifiable showcase proof.</p>
         </div>
       `;
@@ -214,10 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderProjectCardHtml(p, isPortfolio) {
     const diffColor = p.difficulty === "Beginner" ? "success" : (p.difficulty === "Intermediate" ? "warning" : "danger");
     const skillsHtml = (p.skills_addressed || []).map(s =>
-      `<span class="badge bg-dark border border-secondary text-info px-2 py-1" style="font-size: 0.75rem;">${s}</span>`
+      `<span class="badge bg-light text-primary border px-2 py-1" style="font-size: 0.75rem;">${s}</span>`
     ).join("");
 
-    let statusBadge = '<span class="badge bg-dark border border-secondary text-light small">Recommended</span>';
+    let statusBadge = '<span class="badge bg-light border text-muted small">Recommended</span>';
     if (p.status === "saved") {
       statusBadge = '<span class="badge bg-info bg-opacity-25 text-info border border-info small">Planning</span>';
     } else if (p.status === "in_progress") {
@@ -232,16 +232,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
             <span class="badge bg-${diffColor} text-white small">${p.difficulty}</span>
             <div class="d-flex align-items-center gap-2">
-              <span class="text-white small"><i class="bi bi-clock me-1 text-primary"></i> ${p.estimated_hours}</span>
+              <span class="text-muted small"><i class="bi bi-clock me-1 text-primary"></i> ${p.estimated_hours}</span>
               ${statusBadge}
             </div>
           </div>
 
-          <h5 class="fw-bold text-white mb-2">${p.title}</h5>
-          <p class="text-white small mb-3" style="line-height: 1.55; font-size: 0.88rem;">${p.problem_statement}</p>
+          <h5 class="fw-bold text-dark mb-2">${p.title}</h5>
+          <p class="text-muted small mb-3" style="line-height: 1.55; font-size: 0.88rem;">${p.problem_statement}</p>
 
           <div class="mb-3">
-            <div class="small fw-bold text-uppercase mb-1" style="color: #cbd5e1; font-size: 0.75rem;">Skills Addressed:</div>
+            <div class="small fw-bold text-uppercase mb-1 text-muted" style="font-size: 0.75rem;">Skills Addressed:</div>
             <div class="d-flex flex-wrap gap-1">${skillsHtml}</div>
           </div>
 
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <!-- Portfolio Links If Added -->
           ${(p.github_url || p.demo_url) ? `
-            <div class="p-2 mb-3 rounded bg-dark border border-secondary d-flex flex-wrap gap-2">
+            <div class="p-2 mb-3 rounded bg-light border d-flex flex-wrap gap-2">
               ${p.github_url ? `<a href="${p.github_url}" target="_blank" class="btn btn-outline-custom btn-sm rounded-pill"><i class="bi bi-github me-1"></i> Repository</a>` : ''}
               ${p.demo_url ? `<a href="${p.demo_url}" target="_blank" class="btn btn-success btn-sm rounded-pill"><i class="bi bi-box-arrow-up-right me-1"></i> Live Demo</a>` : ''}
             </div>
@@ -292,18 +292,18 @@ document.addEventListener("DOMContentLoaded", () => {
         modalProjectDifficulty.textContent = `${proj.difficulty} &bull; ${proj.estimated_hours}`;
         modalProjectDifficulty.className = `badge bg-${proj.difficulty === 'Beginner' ? 'success' : (proj.difficulty === 'Intermediate' ? 'warning' : 'danger')} mb-1`;
 
-        const reqsHtml = (proj.functional_requirements || []).map(r => `<li class="small text-white mb-1">${r}</li>`).join("");
-        const milestonesHtml = (proj.milestones || []).map(m => `<li class="small text-white mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>${m}</li>`).join("");
+        const reqsHtml = (proj.functional_requirements || []).map(r => `<li class="small text-muted mb-1">${r}</li>`).join("");
+        const milestonesHtml = (proj.milestones || []).map(m => `<li class="small text-muted mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>${m}</li>`).join("");
 
         architectureModalBody.innerHTML = `
           <div class="mb-4">
             <h6 class="fw-bold text-primary text-uppercase small"><i class="bi bi-bullseye me-1"></i> Problem Statement & Objectives</h6>
-            <p class="text-white small" style="line-height: 1.6;">${proj.problem_statement}</p>
+            <p class="text-muted small" style="line-height: 1.6;">${proj.problem_statement}</p>
           </div>
 
           <div class="mb-4">
             <h6 class="fw-bold text-primary text-uppercase small"><i class="bi bi-diagram-2 me-1"></i> Architectural Blueprint</h6>
-            <div class="p-3 rounded bg-dark border border-secondary text-white small" style="font-family: monospace; line-height: 1.5;">
+            <div class="p-3 rounded-3 border small" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; line-height: 1.6; white-space: pre-wrap;">
               ${proj.architecture_guide}
             </div>
           </div>
@@ -322,17 +322,17 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="row g-4 mb-3">
             <div class="col-md-6">
               <h6 class="fw-bold text-primary text-uppercase small"><i class="bi bi-shield-check me-1"></i> Testing Requirements</h6>
-              <p class="text-white small mb-0">${proj.testing_requirements}</p>
+              <p class="text-muted small mb-0">${proj.testing_requirements}</p>
             </div>
             <div class="col-md-6">
               <h6 class="fw-bold text-primary text-uppercase small"><i class="bi bi-cloud-arrow-up me-1"></i> Deployment Recommendations</h6>
-              <p class="text-white small mb-0">${proj.deployment_suggestions}</p>
+              <p class="text-muted small mb-0">${proj.deployment_suggestions}</p>
             </div>
           </div>
 
-          <div class="p-3 rounded-3" style="background: rgba(99, 102, 241, 0.12); border-left: 4px solid #818cf8;">
-            <div class="fw-bold text-white small mb-1"><i class="bi bi-github me-1"></i> Recruiter-Ready Portfolio Guidance:</div>
-            <div class="text-white small" style="font-size: 0.85rem;">${proj.github_portfolio_guidance}</div>
+          <div class="p-3 rounded-3" style="background: rgba(71, 118, 255, 0.08); border-left: 4px solid var(--pf-primary, #4776FF);">
+            <div class="fw-bold text-dark small mb-1"><i class="bi bi-github text-primary me-1"></i> Recruiter-Ready Portfolio Guidance:</div>
+            <div class="text-muted small" style="font-size: 0.88rem;">${proj.github_portfolio_guidance}</div>
           </div>
         `;
 

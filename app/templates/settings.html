@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}PATHFORGE AI | Platform Settings{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+  <!-- Header Banner -->
+  <header class="mb-5">
+    <div class="feature-badge mb-2">
+      <i class="bi bi-gear-wide-connected text-primary"></i> Platform &amp; Learning Preferences
+    </div>
+    <h1 class="display-6 fw-bold mb-2 text-dark">
+      Account &amp; Platform <span class="brand-gradient">Settings</span>
+    </h1>
+    <p class="text-muted small">
+      Configure your study velocity, preferred work arrangement, and security preferences.
+    </p>
+  </header>
+
+  <!-- Global Alert Box -->
+  <div id="settingsAlert" class="alert d-none p-3 mb-4 rounded-3 border" role="alert">
+    <div class="d-flex align-items-center gap-2">
+      <i id="settingsAlertIcon" class="bi fs-5"></i>
+      <span id="settingsAlertMessage" class="small fw-medium"></span>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Preferences Form -->
+    <div class="col-lg-8">
+      
+      <!-- 1. Learning Velocity & Schedule Settings -->
+      <div class="glass-card p-4 p-md-5 mb-4">
+        <h5 class="fw-bold text-dark mb-1"><i class="bi bi-speedometer2 text-primary me-2"></i> Learning Velocity &amp; Study Schedule</h5>
+        <p class="text-muted small mb-4">These parameters configure your personalized roadmap pacing.</p>
+
+        <form id="learningScheduleForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Weekly Study Hours Commitment</label>
+              <select class="form-select" id="settingHoursPerWeek">
+                <option value="5">5 Hours / Week (Gentle Pacing)</option>
+                <option value="10" selected>10 Hours / Week (Recommended)</option>
+                <option value="15">15 Hours / Week (Accelerated)</option>
+                <option value="20">20+ Hours / Week (Full-Time Transition)</option>
+              </select>
+              <div class="form-text text-muted" style="font-size: 0.75rem;">Determines activity distribution per roadmap milestone.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Preferred Roadmap Target Duration</label>
+              <select class="form-select" id="settingRoadmapDuration">
+                <option value="4">4 Weeks (Sprint)</option>
+                <option value="8" selected>8 Weeks (Standard Balanced)</option>
+                <option value="12">12 Weeks (Comprehensive Track)</option>
+              </select>
+              <div class="form-text text-muted" style="font-size: 0.75rem;">Total duration for bridging prioritized skill gaps.</div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Preferred Work Mode Arrangement</label>
+            <select class="form-select" id="settingWorkMode">
+              <option value="Any" selected>Any (Remote, Hybrid, On-site)</option>
+              <option value="Remote">Remote Only</option>
+              <option value="Hybrid">Hybrid Preferred</option>
+              <option value="On-site">On-site Preferred</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary-gradient rounded-pill px-4 py-2">
+            <i class="bi bi-check2-circle me-1"></i> Save Learning Preferences
+          </button>
+        </form>
+      </div>
+
+      <!-- 2. Notification Preferences -->
+      <div class="glass-card p-4 p-md-5 mb-4">
+        <h5 class="fw-bold text-dark mb-1"><i class="bi bi-bell text-primary me-2"></i> System &amp; Diagnostic Notifications</h5>
+        <p class="text-muted small mb-4">Choose which recommendations and adaptive updates you want to receive.</p>
+
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border">
+            <div>
+              <div class="fw-bold text-dark small">Curriculum Adjustment Proposals</div>
+              <div class="text-muted" style="font-size: 0.75rem;">Notify when adaptive engine recommends reinforcing a weak area.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifyAdjustments" checked>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border">
+            <div>
+              <div class="fw-bold text-dark small">Weekly Milestone Progress Reminders</div>
+              <div class="text-muted" style="font-size: 0.75rem;">Receive prompt to review your week's completed activities.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifyMilestones" checked>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border">
+            <div>
+              <div class="fw-bold text-dark small">New Assessment Challenge Alerts</div>
+              <div class="text-muted" style="font-size: 0.75rem;">Suggestions to test skills after completing relevant coding projects.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifyQuizzes" checked>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Account Security & Data Privacy -->
+    <div class="col-lg-4">
+      <!-- Security Information -->
+      <div class="glass-card-elevated p-4 mb-4">
+        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-shield-lock-fill text-success me-2"></i> Authentication &amp; Security</h6>
+        
+        <div class="p-3 rounded-3 bg-light border mb-3">
+          <div class="small text-muted mb-1">Authentication Method</div>
+          <div class="fw-bold text-dark small">Supabase Auth (PostgreSQL RLS)</div>
+          <div class="text-success small mt-1"><i class="bi bi-check-circle-fill me-1"></i> JWT Token Verified</div>
+        </div>
+
+        <div class="p-3 rounded-3 bg-light border mb-4">
+          <div class="small text-muted mb-1">Data Storage Mode</div>
+          <div class="fw-bold text-dark small">Hybrid Resilient Storage</div>
+          <div class="text-muted small mt-1">PostgreSQL RLS with local persistent fallback for uninterrupted access.</div>
+        </div>
+
+        <button class="btn btn-outline-danger w-100 rounded-pill py-2" id="settingsSignOutBtn">
+          <i class="bi bi-box-arrow-right me-1"></i> Sign Out of All Devices
+        </button>
+      </div>
+
+      <!-- Reset Local Cache -->
+      <div class="glass-card p-4">
+        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-trash text-muted me-2"></i> Local Client Storage</h6>
+        <p class="text-muted small mb-3">
+          Clear temporary local storage overrides and cached tokens on this browser.
+        </p>
+        <button class="btn btn-outline-custom w-100 rounded-pill py-2 small" id="clearLocalCacheBtn">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Clear Local Cache
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/settings.js"></script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}PATHFORGE AI | Candidate Profile{% endblock %}
+{% block breadcrumb %}Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+  <!-- Header Banner -->
+  <header class="mb-5">
+    <div class="feature-badge mb-2">
+      <i class="bi bi-person-badge-fill text-primary"></i> Candidate Profile &amp; Verification
+    </div>
+    <h1 class="display-6 fw-bold mb-2 text-dark">
+      Your Verified <span class="brand-gradient">Candidate Profile</span>
+    </h1>
+    <p class="text-muted small">
+      Overview of your verified technical identity, target career alignment, and uploaded resume credentials.
+    </p>
+  </header>
+
+  <div class="row g-4">
+    <!-- Left Column: User Card & Target Alignment -->
+    <div class="col-lg-4">
+      <div class="glass-card-elevated p-4 mb-4 text-center">
+        <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;" id="profAvatar">
+          P
+        </div>
+        <h4 class="fw-bold text-dark mb-1" id="profFullName">Candidate</h4>
+        <div class="text-muted small mb-3" id="profEmail">user@example.com</div>
+        <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill mb-4">
+          <i class="bi bi-shield-check me-1"></i> Supabase Authenticated
+        </div>
+
+        <div class="p-3 rounded-3 bg-light border text-start mb-3">
+          <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem;">Active Target Career</span>
+          <div class="fw-bold text-primary fs-6 mt-1" id="profTargetCareer">Loading...</div>
+          <a href="/career-recommender" class="text-decoration-none small text-muted hover-blue d-inline-block mt-1">
+            <i class="bi bi-pencil me-1"></i> Change Target Role
+          </a>
+        </div>
+
+        <div class="d-grid gap-2">
+          <a href="/resume-analysis" class="btn btn-primary-gradient rounded-pill py-2">
+            <i class="bi bi-file-earmark-arrow-up me-1"></i> Upload New Resume
+          </a>
+          <a href="/settings" class="btn btn-outline-custom rounded-pill py-2">
+            <i class="bi bi-gear me-1"></i> Account Settings
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="glass-card p-4">
+        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-speedometer2 text-primary me-2"></i> Progression Highlights</h6>
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <span class="text-muted small">Roadmap Milestones:</span>
+          <span class="fw-bold text-dark" id="profRoadmapPct">0%</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <span class="text-muted small">Portfolio Projects:</span>
+          <span class="fw-bold text-dark" id="profProjectsCount">0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center py-2">
+          <span class="text-muted small">Average Quiz Score:</span>
+          <span class="fw-bold text-primary" id="profQuizScore">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Extracted Facts & Technical Skills -->
+    <div class="col-lg-8">
+      <!-- Verified Technical Skills -->
+      <div class="glass-card p-4 p-md-5 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+          <div>
+            <h5 class="fw-bold text-dark mb-1"><i class="bi bi-check2-circle text-success me-2"></i> Verified Technical Skills</h5>
+            <p class="text-muted small mb-0">Extracted from your resume with estimated proficiency levels.</p>
+          </div>
+          <a href="/skill-gap-analyzer" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+            Adjust Skill Levels
+          </a>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2" id="profSkillsChipsContainer">
+          <span class="text-muted small">Loading verified skills...</span>
+        </div>
+      </div>
+
+      <!-- Extracted Experience & Projects Summary -->
+      <div class="glass-card p-4 p-md-5">
+        <h5 class="fw-bold text-dark mb-4 border-bottom pb-3">
+          <i class="bi bi-briefcase text-primary me-2"></i> Resume Experience &amp; Academic Background
+        </h5>
+
+        <!-- Education -->
+        <div class="mb-4">
+          <h6 class="fw-bold text-muted small text-uppercase tracking-wider mb-3">Education</h6>
+          <div id="profEducationContainer" class="d-flex flex-column gap-2">
+            <div class="text-muted small">Loading education background...</div>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div>
+          <h6 class="fw-bold text-muted small text-uppercase tracking-wider mb-3">Extracted Projects</h6>
+          <div id="profProjectsContainer" class="d-flex flex-column gap-2">
+            <div class="text-muted small">Loading project history...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/profile.js"></script>
+{% endblock %}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PATHFORGE AI | Career Transition Companion{% endblock %}</title>
+
+  <!-- Preconnect to CDNs & Fonts for High Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Core SaaS & 3D Design System -->
+  <link rel="stylesheet" href="/static/css/resume_analysis.css">
+  <link rel="stylesheet" href="/static/css/career_recommender.css">
+  <link rel="stylesheet" href="/static/css/theme-3d.css">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <div class="app-layout">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Unified 3D SaaS Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Sidebar Header -->
+      <div class="app-sidebar-header">
+        <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="/dashboard">
+          <div class="brand-badge">PF</div>
+          <span class="brand-gradient fs-5 fw-bold">PATHFORGE<span style="color: var(--primary-blue);">.AI</span></span>
+        </a>
+        <button type="button" class="btn btn-sm btn-ghost d-lg-none" id="sidebarCloseBtn" aria-label="Close Sidebar">
+          <i class="bi bi-x-lg fs-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="app-sidebar-body">
+        <div class="sidebar-heading">Intelligence Hub</div>
+
+        <a href="/dashboard" class="sidebar-nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="/career-recommender" class="sidebar-nav-item {% if active_page == 'career-recommender' %}active{% endif %}">
+          <i class="bi bi-compass-fill"></i>
+          <span>Career Discovery</span>
+        </a>
+
+        <a href="/resume-analysis" class="sidebar-nav-item {% if active_page == 'resume-analysis' %}active{% endif %}">
+          <i class="bi bi-file-earmark-person-fill"></i>
+          <span>Resume Analyzer</span>
+        </a>
+
+        <a href="/skill-gap-analyzer" class="sidebar-nav-item {% if active_page == 'skill-gap-analyzer' %}active{% endif %}">
+          <i class="bi bi-bar-chart-steps"></i>
+          <span>Skill Gap Analyzer</span>
+        </a>
+
+        <div class="sidebar-heading mt-3">Action & Mastery</div>
+
+        <a href="/personalized-roadmap" class="sidebar-nav-item {% if active_page == 'personalized-roadmap' %}active{% endif %}">
+          <i class="bi bi-signpost-2-fill"></i>
+          <span>Career Roadmap</span>
+        </a>
+
+        <a href="/project-recommendations" class="sidebar-nav-item {% if active_page == 'project-recommendations' %}active{% endif %}">
+          <i class="bi bi-code-square"></i>
+          <span>Projects & Portfolio</span>
+        </a>
+
+        <a href="/adaptive-learning" class="sidebar-nav-item {% if active_page == 'adaptive-learning' %}active{% endif %}">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Adaptive Learning</span>
+        </a>
+
+        <a href="/quizzes" class="sidebar-nav-item {% if active_page == 'quizzes' %}active{% endif %}">
+          <i class="bi bi-patch-question-fill"></i>
+          <span>Quizzes & Tests</span>
+        </a>
+
+        <div class="sidebar-heading mt-3">User & Account</div>
+
+        <a href="/profile" class="sidebar-nav-item {% if active_page == 'profile' %}active{% endif %}">
+          <i class="bi bi-person-badge-fill"></i>
+          <span>Profile</span>
+        </a>
+
+        <a href="/settings" class="sidebar-nav-item {% if active_page == 'settings' %}active{% endif %}">
+          <i class="bi bi-gear-wide-connected"></i>
+          <span>Settings</span>
+        </a>
+      </div>
+
+      <!-- Sidebar Footer User Profile -->
+      <div class="app-sidebar-footer">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+            <div class="avatar-circle flex-shrink-0" id="topbarUserAvatar">P</div>
+            <div class="overflow-hidden">
+              <div class="fw-bold text-dark small text-truncate" id="sidebarUserEmail">Candidate</div>
+              <div class="text-muted text-truncate" style="font-size: 0.72rem;">Pro Member</div>
+            </div>
+          </div>
+          <button id="logoutBtn" class="btn btn-sm btn-outline-danger rounded-circle p-2" title="Sign out" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Layout -->
+    <div class="app-main">
+      
+      <!-- Sticky Modern Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <!-- Mobile Sidebar Toggle -->
+          <button class="btn btn-sm btn-outline-custom d-lg-none" id="sidebarToggle" aria-label="Toggle navigation menu">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          
+          <!-- Breadcrumb & Context Title -->
+          <div class="d-none d-sm-block">
+            <div class="d-flex align-items-center gap-2 text-muted small">
+              <a href="/dashboard" class="text-decoration-none text-muted">PATHFORGE</a>
+              <i class="bi bi-chevron-right" style="font-size: 0.7rem;"></i>
+              <span class="text-dark fw-semibold">{% block breadcrumb %}Platform{% endblock %}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Live AI Status Indicator -->
+          <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light border border-light">
+            <span class="rounded-circle bg-success" style="width: 8px; height: 8px;"></span>
+            <span class="text-muted small fw-medium" style="font-size: 0.75rem;">AI Systems Online</span>
+          </div>
+
+          <!-- Quick Navigation Pill -->
+          <a href="/adaptive-learning" class="btn btn-secondary-soft btn-sm rounded-pill px-3 py-1 text-decoration-none d-none d-sm-inline-flex">
+            <i class="bi bi-lightning-charge me-1"></i> What's Next?
+          </a>
+
+          <!-- Profile Pill -->
+          <a href="/profile" class="user-profile-pill text-decoration-none">
+            <div class="avatar-circle" style="width: 26px; height: 26px; font-size: 0.72rem;">PF</div>
+            <span class="d-none d-md-inline" id="topbarUserEmail">My Account</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Page Body Container -->
+      <main class="flex-grow-1 p-3 p-md-4 p-xl-5">
+        {% block content %}{% endblock %}
+      </main>
+
+      <!-- Minimal Clean Footer -->
+      <footer class="py-3 px-4 border-top bg-white mt-auto">
+        <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-badge" style="font-size: 0.68rem; padding: 0.15rem 0.4rem !important;">PF</div>
+            <span class="fw-semibold text-dark">PATHFORGE AI</span>
+            <span>&copy; 2026. All rights reserved.</span>
+          </div>
+          <div>
+            <i class="bi bi-shield-check text-success me-1"></i> Secured with PostgreSQL Row-Level Security (RLS)
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- Modal Block -->
+  {% block modals %}{% endblock %}
+
+  <!-- Server Configuration variables injected via Jinja2 -->
+  <script>
+    window.PATHFORGE_CONFIG = {
+      supabaseUrl: "{{ supabase_url }}",
+      supabaseKey: "{{ supabase_key }}"
+    };
+  </script>
+
+  <!-- Supabase JS Client for Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Global App Shell Controller -->
+  <script src="/static/js/app-shell.js"></script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
