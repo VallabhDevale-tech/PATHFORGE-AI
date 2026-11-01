@@ -460,7 +460,7 @@ python -m unittest tests/test_features_3_4_5_6.py
 <div align="center">
 
 **Crafted with care by Vallabh Devale**  
-*Full-Stack Engineer, AI Practitioner & Designer*
+*AI & DS Engineer, AI Practitioner & Designer*
 
 [![GitHub](https://img.shields.io/badge/GitHub-VallabhDevale--tech-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/VallabhDevale-tech)
 
