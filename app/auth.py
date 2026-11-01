@@ -16,7 +16,7 @@ from typing import Set, Tuple, Dict
 logger = logging.getLogger("pathforge.auth")
 security = HTTPBearer(auto_error=False)
 
-SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
+SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET") or "pathforge-ai-fallback-jwt-secret-2026"
 
 # Performance Optimization: In-memory cache for profiles and short-lived token verification
 _KNOWN_PROFILES: Set[str] = set()

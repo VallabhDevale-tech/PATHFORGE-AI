@@ -1,10 +1,11 @@
 /**
- * PATHFORGE AI - Client-Side Supabase Authentication Controller
+ * PATHFORGE AI - Production Authentication Controller
  * Handles session verification, Sign In, Sign Up, password toggles, and route redirection.
+ * Communicates with the FastAPI backend (/api/auth) with Supabase SDK fallback.
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Initialize Supabase Client
+  // Initialize Supabase Client (optional client-side instance)
   const config = window.PATHFORGE_CONFIG || {};
   let supabase = null;
 
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
     } catch (e) {
-      console.error("Failed to initialize Supabase client:", e);
+      console.warn("Client-side Supabase SDK initialization skipped:", e);
     }
   }
 
@@ -88,7 +89,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && session.access_token) {
         localStorage.setItem("pathforge_auth_token", session.access_token);
-        // Already authenticated -> redirect to Resume Analysis
         window.location.replace("/dashboard");
         return;
       }
@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 2. Password Visibility Toggles
   // ---------------------------------------------------------------------------
   function setupPasswordToggle(button, input) {
+    if (!button || !input) return;
     button.addEventListener("click", () => {
       const isPassword = input.type === "password";
       input.type = isPassword ? "text" : "password";
@@ -128,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ---------------------------------------------------------------------------
-  // 3. Sign In Submission
+  // 3. Sign In Submission (Communicates with /api/auth/login)
   // ---------------------------------------------------------------------------
   signInForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -142,51 +143,71 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    if (!supabase) {
-      showAlert("Authentication service is unavailable. Please check configuration.", "danger");
-      return;
-    }
-
     // Set Loading State
     btnSignInSubmit.disabled = true;
     signInSpinner.classList.remove("d-none");
     signInBtnText.textContent = "Signing In...";
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
+      // 1. Primary: FastAPI Backend endpoint
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
       });
 
-      if (error) {
-        let msg = error.message || "Authentication failed.";
-        if (msg.toLowerCase().includes("invalid login credentials")) {
-          msg = "Invalid email or password. Please verify your credentials and try again.";
-        } else if (msg.toLowerCase().includes("email not confirmed")) {
-          msg = "Your email address has not been confirmed yet. Please check your inbox.";
-        }
-        showAlert(msg, "danger");
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const errorDetail = result.detail || result.message || "Invalid credentials. Please try again.";
+        showAlert(errorDetail, "danger");
         btnSignInSubmit.disabled = false;
         signInSpinner.classList.add("d-none");
         signInBtnText.textContent = "Sign In to PATHFORGE";
         return;
       }
 
-      if (data && data.session) {
-        localStorage.setItem("pathforge_auth_token", data.session.access_token);
+      if (result.access_token) {
+        localStorage.setItem("pathforge_auth_token", result.access_token);
         showAlert("Signed in successfully! Redirecting to Dashboard...", "success");
         setTimeout(() => {
           window.location.replace("/dashboard");
         }, 500);
-      } else {
-        showAlert("Unexpected response from authentication provider.", "danger");
-        btnSignInSubmit.disabled = false;
-        signInSpinner.classList.add("d-none");
-        signInBtnText.textContent = "Sign In to PATHFORGE";
+        return;
       }
 
+      throw new Error("No authorization token received.");
+
     } catch (err) {
-      showAlert(`Sign in error: ${err.message || err}`, "danger");
+      console.warn("Backend login error, attempting client-side fallback:", err);
+
+      // 2. Secondary Fallback: Direct Supabase client if backend fetch failed
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+          if (error) {
+            showAlert(error.message || "Authentication failed.", "danger");
+          } else if (data && data.session) {
+            localStorage.setItem("pathforge_auth_token", data.session.access_token);
+            showAlert("Signed in successfully! Redirecting to Dashboard...", "success");
+            setTimeout(() => {
+              window.location.replace("/dashboard");
+            }, 500);
+            return;
+          }
+        } catch (sbErr) {
+          showAlert(`Authentication failed: ${sbErr.message || sbErr}`, "danger");
+        }
+      } else {
+        showAlert(`Sign in failed: ${err.message || "Network error. Please try again."}`, "danger");
+      }
+
       btnSignInSubmit.disabled = false;
       signInSpinner.classList.add("d-none");
       signInBtnText.textContent = "Sign In to PATHFORGE";
@@ -194,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ---------------------------------------------------------------------------
-  // 4. Sign Up Submission
+  // 4. Sign Up Submission (Communicates with /api/auth/signup)
   // ---------------------------------------------------------------------------
   signUpForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -229,64 +250,98 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    if (!supabase) {
-      showAlert("Authentication service is unavailable. Please check configuration.", "danger");
-      return;
-    }
-
     // Set Loading State
     btnSignUpSubmit.disabled = true;
     signUpSpinner.classList.remove("d-none");
     signUpBtnText.textContent = "Creating Account...";
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            full_name: fullName
-          }
-        }
+      // 1. Primary: FastAPI Backend endpoint
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          full_name: fullName
+        })
       });
 
-      if (error) {
-        let msg = error.message || "Registration failed.";
-        if (msg.toLowerCase().includes("user already registered") || msg.toLowerCase().includes("already exists")) {
-          msg = "An account with this email address already exists. Please sign in instead.";
-        }
-        showAlert(msg, "danger");
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const errorDetail = result.detail || result.message || "Registration failed. Please try again.";
+        showAlert(errorDetail, "danger");
         btnSignUpSubmit.disabled = false;
         signUpSpinner.classList.add("d-none");
         signUpBtnText.textContent = "Create My Account";
         return;
       }
 
-      // Check if session was granted immediately (email confirmation disabled or auto-confirm)
-      if (data && data.session) {
-        localStorage.setItem("pathforge_auth_token", data.session.access_token);
+      // Check for immediate session
+      if (result.access_token) {
+        localStorage.setItem("pathforge_auth_token", result.access_token);
         showAlert("Account created successfully! Redirecting to Dashboard...", "success");
         setTimeout(() => {
           window.location.replace("/dashboard");
-        }, 600);
-      } else {
-        // Confirmation email sent
-        showAlert("Account registered! If confirmation is required, please check your email inbox. You can now sign in.", "info");
-        btnSignUpSubmit.disabled = false;
-        signUpSpinner.classList.add("d-none");
-        signUpBtnText.textContent = "Create My Account";
-        
-        // Switch to Sign In tab and prepopulate email
-        signInEmail.value = email;
-        signInPassword.value = "";
-        setTimeout(() => {
-          new bootstrap.Tab(tabSignInBtn).show();
-          signInPassword.focus();
-        }, 1200);
+        }, 500);
+        return;
       }
 
+      // If confirmation email was dispatched
+      showAlert("Account registered! Please check your email inbox to verify your account, then sign in.", "info");
+      btnSignUpSubmit.disabled = false;
+      signUpSpinner.classList.add("d-none");
+      signUpBtnText.textContent = "Create My Account";
+
+      signInEmail.value = email;
+      signInPassword.value = "";
+      setTimeout(() => {
+        new bootstrap.Tab(tabSignInBtn).show();
+        signInPassword.focus();
+      }, 1200);
+
     } catch (err) {
-      showAlert(`Registration error: ${err.message || err}`, "danger");
+      console.warn("Backend signup error, attempting client-side fallback:", err);
+
+      // 2. Secondary Fallback: Direct Supabase client if backend fetch failed
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: {
+                full_name: fullName
+              }
+            }
+          });
+
+          if (error) {
+            showAlert(error.message || "Registration failed.", "danger");
+          } else if (data && data.session) {
+            localStorage.setItem("pathforge_auth_token", data.session.access_token);
+            showAlert("Account created successfully! Redirecting to Dashboard...", "success");
+            setTimeout(() => {
+              window.location.replace("/dashboard");
+            }, 500);
+            return;
+          } else {
+            showAlert("Account registered! Please check your email to confirm, then sign in.", "info");
+            setTimeout(() => {
+              new bootstrap.Tab(tabSignInBtn).show();
+              signInPassword.focus();
+            }, 1200);
+          }
+        } catch (sbErr) {
+          showAlert(`Registration error: ${sbErr.message || sbErr}`, "danger");
+        }
+      } else {
+        showAlert(`Registration failed: ${err.message || "Network error. Please try again."}`, "danger");
+      }
+
       btnSignUpSubmit.disabled = false;
       signUpSpinner.classList.add("d-none");
       signUpBtnText.textContent = "Create My Account";
@@ -305,18 +360,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       showAlert("Sending password reset instructions...", "info");
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
       });
-
-      if (error) {
-        showAlert(error.message, "danger");
-      } else {
-        showAlert(`Password reset email sent to ${email}. Please check your inbox.`, "success");
-      }
+      const data = await res.json().catch(() => ({}));
+      showAlert(data.message || `Password reset instructions sent to ${email}.`, "success");
     } catch (err) {
       showAlert(`Reset error: ${err.message || err}`, "danger");
     }
   });
 });
-

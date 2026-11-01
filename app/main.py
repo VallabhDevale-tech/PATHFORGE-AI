@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -21,6 +22,7 @@ from app.routers.skill_gap_routes import router as skill_gap_router
 from app.routers.roadmap_routes import router as roadmap_router
 from app.routers.project_routes import router as project_router
 from app.routers.adaptive_routes import router as adaptive_router
+from app.routers.auth_routes import router as auth_router
 
 app = FastAPI(
     title="PATHFORGE AI",
@@ -30,6 +32,15 @@ app = FastAPI(
 
 # Enable automatic Gzip compression for all responses >= 500 bytes
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+# Enable CORS for cross-origin requests from any client/origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 STATIC_DIR = APP_DIR / "static"
 TEMPLATES_DIR = APP_DIR / "templates"
@@ -55,6 +66,7 @@ templates = Jinja2Templates(
 )
 
 # Register API Routers
+app.include_router(auth_router)
 app.include_router(resume_router)
 app.include_router(career_router)
 app.include_router(skill_gap_router)
