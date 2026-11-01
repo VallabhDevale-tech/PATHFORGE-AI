@@ -12,6 +12,9 @@
 [![Deployment](https://img.shields.io/badge/Render-Production%20Ready-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#-license)
 
+
+live-deployment-link : https://pathforge-ai-x99c.onrender.com
+
 <br/>
 
 > *"Your career is not a straight highway; it’s an evolving canvas. PATHFORGE AI transforms the chaos of career transitions into a clear, empowering, step-by-step adventure."*
