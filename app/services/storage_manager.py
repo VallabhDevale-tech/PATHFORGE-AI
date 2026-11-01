@@ -27,6 +27,9 @@ def init_local_db():
     conn = _get_db()
     with conn:
         conn.executescript("""
+            -- =================================================================
+            -- 1. TABLES INITIALIZATION (All tables created first)
+            -- =================================================================
             CREATE TABLE IF NOT EXISTS resume_analysis (
                 id TEXT PRIMARY KEY,
                 resume_id TEXT NOT NULL,
@@ -43,18 +46,6 @@ def init_local_db():
                 raw_analysis TEXT NOT NULL DEFAULT '{}',
                 created_at TEXT NOT NULL
             );
-            CREATE INDEX IF NOT EXISTS idx_la_resume_id ON resume_analysis(resume_id);
-            CREATE INDEX IF NOT EXISTS idx_la_user_id ON resume_analysis(user_id);
-            CREATE INDEX IF NOT EXISTS idx_la_user_resume ON resume_analysis(user_id, resume_id);
-            CREATE INDEX IF NOT EXISTS idx_cr_user ON career_recommendations(user_id);
-            CREATE INDEX IF NOT EXISTS idx_sgr_user ON skill_gap_reports(user_id);
-            CREATE INDEX IF NOT EXISTS idx_sgr_user_career ON skill_gap_reports(user_id, career_slug);
-            CREATE INDEX IF NOT EXISTS idx_lr_user ON learning_roadmaps(user_id);
-            CREATE INDEX IF NOT EXISTS idx_lr_user_career ON learning_roadmaps(user_id, career_slug);
-            CREATE INDEX IF NOT EXISTS idx_up_user ON user_projects(user_id);
-            CREATE INDEX IF NOT EXISTS idx_up_user_career ON user_projects(user_id, career_slug);
-            CREATE INDEX IF NOT EXISTS idx_la_user ON learning_assessments(user_id);
-            CREATE INDEX IF NOT EXISTS idx_ra_user ON roadmap_adjustments(user_id);
 
             CREATE TABLE IF NOT EXISTS career_recommendations (
                 id TEXT PRIMARY KEY,
@@ -147,6 +138,23 @@ def init_local_db():
                 status TEXT NOT NULL DEFAULT 'pending',
                 created_at TEXT NOT NULL
             );
+
+            -- =================================================================
+            -- 2. INDEXES INITIALIZATION (Created strictly after all tables exist)
+            -- =================================================================
+            CREATE INDEX IF NOT EXISTS idx_ra_resume_id ON resume_analysis(resume_id);
+            CREATE INDEX IF NOT EXISTS idx_ra_user_id ON resume_analysis(user_id);
+            CREATE INDEX IF NOT EXISTS idx_ra_user_resume ON resume_analysis(user_id, resume_id);
+            CREATE INDEX IF NOT EXISTS idx_cr_user ON career_recommendations(user_id);
+            CREATE INDEX IF NOT EXISTS idx_ucs_user ON user_career_selections(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sgr_user ON skill_gap_reports(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sgr_user_career ON skill_gap_reports(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_lr_user ON learning_roadmaps(user_id);
+            CREATE INDEX IF NOT EXISTS idx_lr_user_career ON learning_roadmaps(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_up_user ON user_projects(user_id);
+            CREATE INDEX IF NOT EXISTS idx_up_user_career ON user_projects(user_id, career_slug);
+            CREATE INDEX IF NOT EXISTS idx_la_user ON learning_assessments(user_id);
+            CREATE INDEX IF NOT EXISTS idx_ra_user ON roadmap_adjustments(user_id);
         """)
 
         # Add report_data column if existing database was created without it
